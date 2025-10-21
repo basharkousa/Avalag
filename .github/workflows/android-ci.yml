@@ -1,0 +1,80 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ develop, main ]
+    tags: [ "v*" ]
+  pull_request:
+    branches: [ develop, main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Gradle cache
+        uses: gradle/gradle-build-action@v3
+
+      - name: Lint & Static analysis
+        run: ./gradlew ktlintCheck detekt --no-daemon
+
+      - name: Unit tests
+        run: ./gradlew testDebugUnitTest --no-daemon
+
+      # --- DEBUG artifact for PRs & develop ---
+      - name: Assemble debug
+        if: github.event_name == 'pull_request' || startsWith(github.ref, 'refs/heads/develop')
+        run: ./gradlew :app:assembleDebug --no-daemon
+
+      - name: Upload debug APK
+        if: github.event_name == 'pull_request' || startsWith(github.ref, 'refs/heads/develop')
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-${{ github.sha }}
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 14
+
+      # --- RELEASE on tag v* (signed) ---
+      - name: Decode keystore
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "$SIGNING_KEYSTORE_BASE64" | base64 -d > keystore.jks
+        env:
+          SIGNING_KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+
+      - name: Assemble release (signed)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          SIGNING_STORE_FILE: keystore.jks
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: ./gradlew :app:assembleRelease --no-daemon
+
+      - name: Upload release artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-${{ github.ref_name }}
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 60
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab

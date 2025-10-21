@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Avalag</string>
+    <string name="template_screen">شاشة القالب</string>
+    <string name="best_choice_to_start_your_app">أفضل خيار لبناء تطبيقك</string>
+    <string name="settings">الإعدادات</string>
+    <string name="notifications">الإشعارات</string>
+    <string name="main_screen">الصفحة الرئيسية</string>
+    <string name="notifications_setting">إعدادات الإشعارات</string>
+    <string name="manage_your_notifications_preferences">قم بإدارة تفضيلات الإشعارات هنا</string>
+    <string name="preferences">التفضيلات</string>
+    <string name="security">الأمان</string>
+    <string name="change_password">تغيير كلمة المرور</string>
+    <string name="biometric_authentications">المصادقات البيومترية</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="change_language">تغيير اللغة</string>
+    <string name="system_default">الإعداد الافتراضي للنظام</string>
+    <string name="theme_mode">وضع السمة</string>
+    <string name="system">النظام</string>
+    <string name="light">فاتح</string>
+    <string name="dark">داكن</string>
+    <string name="colse">Close</string>
+</resources>
