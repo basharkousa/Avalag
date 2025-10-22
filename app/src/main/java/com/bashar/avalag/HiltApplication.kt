@@ -1,13 +1,10 @@
 package com.bashar.avalag
 
-import androidx.multidex.BuildConfig
 import androidx.multidex.MultiDexApplication
 import com.bashar.avalag.src.features.setting.domain.ApplyLanguageUseCase
 import com.bashar.avalag.src.features.setting.domain.GetLanguageFlowUseCase
-import com.bashar.avalag.src.features.setting.domain.models.Language
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.flow.first
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
