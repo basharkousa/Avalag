@@ -93,7 +93,7 @@ fun OnBoardingScreen(
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun ScreenContent(
-    state: OnBoardingState ,
+    state: OnBoardingState,
     onEvent: (OnBoardingEvents) -> Unit = {}
 ) {
     // Handle navigation when loading completes
@@ -193,7 +193,7 @@ fun OnboardingRoute(
 //                    text = page.title,
                     text = stringResource(id = R.string.onboarding_title_1),
                     style = MaterialTheme.typography.displaySmall,
-                    color = MaterialTheme.colorScheme.background,
+                    color = Color.White,
                     textAlign = TextAlign.Center,
 
 //                    style = TextStyle(
