@@ -105,23 +105,7 @@ private fun SplashContent(
                     .width(96.33098.dp)
                     .height(93.42924.dp)
             )
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 34.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.weight(weight = 1f))
 
-                Spacer(modifier = Modifier.weight(weight = 0.8f))
-//                CircularProgressIndicator(Modifier.padding(12.dp), color = LightAccent)
-
-                Greeting(
-                    name = stringResource(id = R.string.best_choice_to_start_your_app),
-                    modifier = Modifier.padding()
-                )
-            }
             Image(
                 painterResource(R.drawable.ic_avalag_logo),
                 contentDescription = "",

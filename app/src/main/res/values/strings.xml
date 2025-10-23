@@ -19,4 +19,6 @@
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="colse">Close</string>
+    <string name="onboarding_title_1">Get Started with\\nSmart Styling</string>
+    <string name="onboarding_subtitle_1">Set up your fashion preferences for a personalized AI-powered experience.</string>
 </resources>

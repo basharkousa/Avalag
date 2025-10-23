@@ -25,7 +25,7 @@ val LocalNavController = compositionLocalOf<NavHostController>() {
 fun MyAppNavigator(
     navController: NavHostController = rememberNavController(),
     navigatorBottomNavigation: NavHostController,
-    startDestination: String = Screen.SettingScreen.route,
+    startDestination: String = Screen.SplashScreen.route,
     modifier: Modifier = Modifier,
 ) {
 

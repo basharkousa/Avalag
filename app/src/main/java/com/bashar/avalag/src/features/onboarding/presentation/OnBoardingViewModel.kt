@@ -5,6 +5,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.bashar.avalag.R
@@ -20,8 +21,9 @@ class OnBoardingViewModel @Inject constructor(
         OnBoardingState(
           pages = mutableListOf(OnboardingPage(
               imageRes = R.drawable.iv_slide1, // your first photo
-              title = "Get Started with\nSmart Styling",
-              subtitle = "Set up your fashion preferences for a personalized AI-powered experience."
+              title = "onboarding_title_1",
+              subtitle = "onboarding_subtitle_1"
+
           ),
               OnboardingPage(
                   imageRes = R.drawable.iv_slide2,

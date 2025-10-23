@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.bashar.avalag.R
 
 
 import androidx.annotation.DrawableRes
@@ -40,6 +41,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 
 import androidx.compose.ui.text.font.FontWeight
@@ -57,14 +59,6 @@ fun OnBoardingScreen(
     onNavigateToMain: () -> Unit = {},
 ) {
     val state by viewModel.state
-    ScreenContent(
-        state = state,
-        onEvent = { event ->
-            when(event){
-                is OnBoardingEvents.NavigateToMainScreen -> onNavigateToMain()
-            }
-        }
-    )
     LaunchedEffect(Unit) {
         println("Navigate_to_Home")
         /*  viewModel.screenState.collect { event ->
@@ -85,6 +79,15 @@ fun OnBoardingScreen(
           }*/
 
     }
+    ScreenContent(
+        state = state,
+        onEvent = { event ->
+            when(event){
+                is OnBoardingEvents.NavigateToMainScreen -> onNavigateToMain()
+            }
+        }
+    )
+
 }
 
 //@Preview(showBackground = true, showSystemUi = true)
@@ -187,22 +190,28 @@ fun OnboardingRoute(
             ) {
                 val page = pages[pagerState.currentPage]
                 Text(
-                    text = page.title,
-                    style = TextStyle(
-                        fontFamily = WestMoscow,
-                        fontSize = 32.sp,
-                        lineHeight = 38.4.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFFFFFFFF),
-                        textAlign = TextAlign.Center,
-                    )
+//                    text = page.title,
+                    text = stringResource(id = R.string.onboarding_title_1),
+                    style = MaterialTheme.typography.displaySmall,
+                    color = MaterialTheme.colorScheme.background,
+                    textAlign = TextAlign.Center,
+
+//                    style = TextStyle(
+//                        fontSize = 32.sp,
+//                        lineHeight = 38.4.sp,
+//                        fontWeight = FontWeight(400),
+//                        color = Color(0xFFFFFFFF),
+//                        textAlign = TextAlign.Center,
+//                    )
                 )
 
                 Text(
-                    text = page.subtitle,
+//                    text = page.subtitle,
+                    text = stringResource(id = R.string.onboarding_subtitle_1),
                     color = Color(0xCCFFFFFF),
                     fontSize = 14.sp,
                     lineHeight = 20.sp,
+                    textAlign = TextAlign.Center,
                 )
 
                 Row(
