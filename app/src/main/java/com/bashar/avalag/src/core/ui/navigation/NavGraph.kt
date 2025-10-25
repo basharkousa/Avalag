@@ -11,7 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.bashar.avalag.src.features.main.presntation.MainScreen
+import com.bashar.avalag.src.features.main.presentation.MainScreen
 import com.bashar.avalag.src.features.onboarding.presentation.OnBoardingScreen
 import com.bashar.avalag.src.features.setting.presentation.screens.SettingScreen
 import com.bashar.avalag.src.features.splash.presentation.SplashScreen

@@ -17,11 +17,12 @@ import com.bashar.avalag.src.features.setting.domain.models.Language
 import com.bashar.avalag.src.features.setting.domain.models.ThemeMode
 import com.bashar.avalag.src.core.ui.widgets.items.ChevronItem
 import com.bashar.avalag.R
+import com.bashar.avalag.src.core.ui.widgets.Refreshable
 import com.bashar.avalag.src.features.setting.presentation.widgets.dialogs.LanguagePickerDialog
 import com.bashar.avalag.src.features.setting.presentation.widgets.dialogs.ThemePickerDialog
 import com.bashar.avalag.src.features.setting.presentation.widgets.items.SwitchItem
 import com.bashar.avalag.src.features.setting.presentation.widgets.items.ValueItem
-import com.bashar.avalag.src.features.setting.presentation.widgets.sections.CardSection
+import com.bashar.avalag.src.core.ui.widgets.sections.CardSection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,24 +40,28 @@ fun SettingScreen(
     ScreenContent(
         state = state,
         onEvent = { event ->
-            when(event) {
-                is SettingsEvents.OnBackPress -> onBack()
+            when (event) {
+                is SettingsEvent.OnBackPress -> onBack()
 //                else -> viewModel.onEvent(event)
-                SettingsEvents.OnChangePassword -> onChangePassword()
-                is SettingsEvents.OnCheckChange -> {
+                SettingsEvent.OnChangePassword -> onChangePassword()
+                is SettingsEvent.ToggleBiometrics -> {
 
                 }
-                SettingsEvents.OnOpenNotifications -> onOpenNotifications()
-                SettingsEvents.OnOpenPolicy -> {
+
+                SettingsEvent.OnOpenNotifications -> onOpenNotifications()
+                SettingsEvent.OnOpenPolicy -> {
                     onOpenPolicy()
                 }
-                SettingsEvents.OnOpenLanguagePicker -> {
+
+                SettingsEvent.OnOpenLanguagePicker -> {
                     showLang = true
                 }
-                SettingsEvents.OnOpenThemePicker -> {
+
+                SettingsEvent.OnOpenThemePicker -> {
                     showTheme = true
                 }
-                SettingsEvents.Refresh -> {
+
+                SettingsEvent.Refresh -> {
 
                 }
             }
@@ -80,7 +85,7 @@ fun SettingScreen(
 @Composable
 private fun ScreenContent(
     state: SettingState = SettingState(),
-    onEvent: (SettingsEvents) -> Unit = {}
+    onEvent: (SettingsEvent) -> Unit = {}
 ) {
 
     LaunchedEffect(Unit) {
@@ -90,54 +95,74 @@ private fun ScreenContent(
     }
     Scaffold(
         topBar = {
-            DefaultTppBar(stringResource = R.string.settings, onBack = {onEvent(SettingsEvents.OnBackPress)})
+            DefaultTppBar(
+                stringResource = R.string.settings,
+                onBack = { onEvent(SettingsEvent.OnBackPress) })
         }
     ) { inner ->
-        Column(
-            modifier = Modifier
-                .padding(inner)
-                .fillMaxSize()
-//                .background(MaterialTheme.colorScheme.background.copy())
-                .padding(12.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            CardSection(stringResource(R.string.notifications)) {
-                ChevronItem(
-                    R.drawable.ic_ring,
-                    stringResource(R.string.notifications_setting),
-                    stringResource(R.string.manage_your_notifications_preferences),
+        var refreshing by remember { mutableStateOf(false) }
+        Refreshable(
+            refreshing = refreshing,
+            onRefresh = {
+                refreshing = true
+                onEvent(SettingsEvent.Refresh)
+                refreshing = false
+                 }) {
+            Column(
+                modifier = Modifier
+                    .padding(inner)
+                    .fillMaxSize()
+                    //                .background(MaterialTheme.colorScheme.background.copy())
+                    .padding(12.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                CardSection(stringResource(R.string.notifications)) {
+                    ChevronItem(
+                        R.drawable.ic_ring,
+                        stringResource(R.string.notifications_setting),
+                        stringResource(R.string.manage_your_notifications_preferences),
 
-                ){
-                    onEvent(SettingsEvents.OnOpenNotifications)
+                        ) {
+                        onEvent(SettingsEvent.OnOpenNotifications)
+                    }
                 }
-            }
-            CardSection(stringResource(R.string.security)) {
-                ChevronItem(R.drawable.ic_lock, stringResource(R.string.change_password), onClick = {onEvent(SettingsEvents.OnChangePassword)})
-                SwitchItem(R.drawable.ic_fingerprint, stringResource(R.string.biometric_authentications),
-                    checked = state.biometricEnabled, onCheckedChange = { onEvent(SettingsEvents.OnCheckChange(it))  })
-                ChevronItem(R.drawable.ic_document, stringResource(R.string.privacy_policy), onClick = {onEvent(SettingsEvents.OnOpenPolicy)})
-            }
-            CardSection(stringResource(R.string.preferences)) {
-                ValueItem(
-                    icon = Icons.Outlined.Translate,
-                    title = stringResource(R.string.change_language),
-                    value = when (state.language) {
-                        Language.System -> stringResource(R.string.system_default)
-                        else -> state.language.name
-                    },
-                    onClick = { onEvent(SettingsEvents.OnOpenLanguagePicker) }
-                )
-                ValueItem(
-                    icon = Icons.Outlined.DarkMode,
-                    title = stringResource(R.string.theme_mode),
-                    value = when (state.theme) {
-                        ThemeMode.SYSTEM -> stringResource(R.string.system)
-                        ThemeMode.LIGHT -> stringResource(R.string.light)
-                        ThemeMode.DARK -> stringResource(R.string.dark)
-                    },
-                    onClick = { onEvent(SettingsEvents.OnOpenThemePicker) }
-                )
+                CardSection(stringResource(R.string.security)) {
+                    ChevronItem(
+                        R.drawable.ic_lock,
+                        stringResource(R.string.change_password),
+                        onClick = { onEvent(SettingsEvent.OnChangePassword) })
+                    SwitchItem(
+                        R.drawable.ic_fingerprint,
+                        stringResource(R.string.biometric_authentications),
+                        checked = state.biometricEnabled,
+                        onCheckedChange = { onEvent(SettingsEvent.ToggleBiometrics(it)) })
+                    ChevronItem(
+                        R.drawable.ic_document,
+                        stringResource(R.string.privacy_policy),
+                        onClick = { onEvent(SettingsEvent.OnOpenPolicy) })
+                }
+                CardSection(stringResource(R.string.preferences)) {
+                    ValueItem(
+                        icon = Icons.Outlined.Translate,
+                        title = stringResource(R.string.change_language),
+                        value = when (state.language) {
+                            Language.System -> stringResource(R.string.system_default)
+                            else -> state.language.name
+                        },
+                        onClick = { onEvent(SettingsEvent.OnOpenLanguagePicker) }
+                    )
+                    ValueItem(
+                        icon = Icons.Outlined.DarkMode,
+                        title = stringResource(R.string.theme_mode),
+                        value = when (state.theme) {
+                            ThemeMode.SYSTEM -> stringResource(R.string.system)
+                            ThemeMode.LIGHT -> stringResource(R.string.light)
+                            ThemeMode.DARK -> stringResource(R.string.dark)
+                        },
+                        onClick = { onEvent(SettingsEvent.OnOpenThemePicker) }
+                    )
+                }
             }
         }
     }

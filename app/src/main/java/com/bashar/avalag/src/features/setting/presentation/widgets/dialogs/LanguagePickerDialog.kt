@@ -52,6 +52,6 @@ fun LanguagePickerDialog(
             }
         },
         confirmButton = {},
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.colse)) } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } }
     )
 }

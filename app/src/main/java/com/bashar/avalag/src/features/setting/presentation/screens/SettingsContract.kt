@@ -9,17 +9,17 @@ data class SettingState(
     val biometricEnabled: Boolean = false // hook up later
 )
 
-sealed class SettingsEvents {
+sealed class SettingsEvent {
 
 //    data class ShowSnackBar(val message: String): TemplateEvents()
-    data class OnCheckChange(val checked: Boolean) : SettingsEvents()
-    object OnBackPress : SettingsEvents()
-    object Refresh : SettingsEvents()
-    object OnOpenNotifications : SettingsEvents()
-    object OnChangePassword : SettingsEvents()
-    object OnOpenPolicy : SettingsEvents()
-    object OnOpenLanguagePicker : SettingsEvents()
-    object OnOpenThemePicker : SettingsEvents()
+    data class ToggleBiometrics(val enabled: Boolean) : SettingsEvent()
+    object OnBackPress : SettingsEvent()
+    object Refresh : SettingsEvent()
+    object OnOpenNotifications : SettingsEvent()
+    object OnChangePassword : SettingsEvent()
+    object OnOpenPolicy : SettingsEvent()
+    object OnOpenLanguagePicker : SettingsEvent()
+    object OnOpenThemePicker : SettingsEvent()
 //    data class Search(val query: String) : TemplateEvents()
 
 

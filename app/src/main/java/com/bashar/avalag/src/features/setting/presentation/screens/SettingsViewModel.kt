@@ -33,4 +33,6 @@ class SettingsViewModel @Inject constructor(
         setLanguage(language)      // persist
         applyLanguage(language)    // side-effect: switch app locales
     }
+
+
 }

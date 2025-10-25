@@ -19,7 +19,7 @@
     <string name="system">النظام</string>
     <string name="light">فاتح</string>
     <string name="dark">داكن</string>
-    <string name="colse">اغلاق</string>
+    <string name="close">إغلاق</string>
     <string name="onboarding_title_1">ابدأ بأسلوب ذكي</string>
     <string name="onboarding_subtitle_1">قم بضبط تفضيلاتك في الأزياء لتجربة مخصصة مدعومة بالذكاء الاصطناعي.</string>
 </resources>

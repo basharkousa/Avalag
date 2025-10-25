@@ -1,6 +1,7 @@
 package com.bashar.avalag.src.features.splash.presentation
 
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bashar.avalag.R
 import com.bashar.avalag.src.core.ui.widgets.BackGroundThemeWidget
@@ -83,9 +87,26 @@ private fun SplashContent(
     onEvent: (SplashEvents) -> Unit = {}
 ) {
     // Handle navigation when loading completes
+    val window = LocalActivity.current?.window
     LaunchedEffect(state.isLoading){
+        window?.let {
+            WindowCompat.setDecorFitsSystemWindows(it, false)
+            WindowInsetsControllerCompat(it, it.decorView).apply {
+                hide(WindowInsetsCompat.Type.statusBars())
+                systemBarsBehavior =
+                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        }
         if (!state.isLoading) {
+
             onEvent(SplashEvents.NavigateToMainScreen)
+//            onFinished()
+
+            window?.let {
+                WindowInsetsControllerCompat(it, it.decorView)
+                    .show(WindowInsetsCompat.Type.statusBars())
+                WindowCompat.setDecorFitsSystemWindows(it, true)
+            }
         }
     }
     Scaffold() {

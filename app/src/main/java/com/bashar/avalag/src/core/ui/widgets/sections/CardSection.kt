@@ -1,4 +1,4 @@
-package com.bashar.avalag.src.features.setting.presentation.widgets.sections
+package com.bashar.avalag.src.core.ui.widgets.sections
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
