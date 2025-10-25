@@ -25,13 +25,6 @@ import javax.inject.Singleton
 object SettingModule {
 
     @Provides @Singleton
-    fun provideDataStore(@ApplicationContext ctx: Context): DataStore<Preferences> =
-        PreferenceDataStoreFactory.create(
-            corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() },
-            produceFile = { ctx.preferencesDataStoreFile("settings.preferences_pb") }
-        )
-
-    @Provides @Singleton
     fun provideDs(ds: DataStore<Preferences>) = SettingPreferencesDataSource(ds)
 
     @Provides @Singleton

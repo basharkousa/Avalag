@@ -11,7 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.bashar.avalag.src.features.main.presntation.MainScreen
+import com.bashar.avalag.src.features.main.presentation.MainScreen
 import com.bashar.avalag.src.features.onboarding.presentation.OnBoardingScreen
 import com.bashar.avalag.src.features.setting.presentation.screens.SettingScreen
 import com.bashar.avalag.src.features.splash.presentation.SplashScreen
@@ -25,7 +25,7 @@ val LocalNavController = compositionLocalOf<NavHostController>() {
 fun MyAppNavigator(
     navController: NavHostController = rememberNavController(),
     navigatorBottomNavigation: NavHostController,
-    startDestination: String = Screen.SettingScreen.route,
+    startDestination: String = Screen.SplashScreen.route,
     modifier: Modifier = Modifier,
 ) {
 
