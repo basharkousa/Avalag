@@ -12,6 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.bashar.avalag.src.features.auth.presentation.screens.login.LoginScreen
+import com.bashar.avalag.src.features.auth.presentation.screens.otp.OtpScreen
+import com.bashar.avalag.src.features.auth.presentation.screens.signup.SignUpScreen
 import com.bashar.avalag.src.features.main.presentation.MainScreen
 import com.bashar.avalag.src.features.onboarding.presentation.OnBoardingScreen
 import com.bashar.avalag.src.features.setting.presentation.screens.SettingScreen
@@ -26,7 +28,7 @@ val LocalNavController = compositionLocalOf<NavHostController>() {
 fun MyAppNavigator(
     navController: NavHostController = rememberNavController(),
     navigatorBottomNavigation: NavHostController,
-    startDestination: String = Screen.SplashScreen.route,
+    startDestination: String = Screen.SplashRoute.route,
     modifier: Modifier = Modifier,
 ) {
 
@@ -34,31 +36,52 @@ fun MyAppNavigator(
     CompositionLocalProvider(LocalNavController provides navController) {
         NavHost(navController = navController, startDestination = startDestination) {
 
-            composable(Screen.SplashScreen.route) {
+            composable(Screen.SplashRoute.route) {
                 SplashScreen(
                     onNavigateToScreen = {
-                        navController.navigate(Screen.LoginScreen.route) {
-                            popUpTo(Screen.SplashScreen.route) { inclusive = true }
+                        navController.navigate(Screen.OnBoardingRoute.route) {
+                            popUpTo(Screen.SplashRoute.route) { inclusive = true }
                         }
                     }
                 )
             }
-            composable(Screen.LoginScreen.route) {
+            composable(Screen.LoginScreenRoute.route) {
                 LoginScreen(
                     onBack = {
                         navController.navigateUp()
                     },
                     onNavigateToScreen = {
-                        navController.navigate(Screen.SettingScreen.route)
+                        navController.navigate(Screen.SignUpRouteRoute.route)
+                    }
+                )
+            }
+            composable(Screen.OtpRouteRoute.route) {
+                OtpScreen(
+                    onBack = {
+                        navController.navigateUp()
+                    },
+                    onNext = {
+                        navController.navigate(Screen.SettingScreenRoute.route)
                     }
                 )
             }
 
-            composable(Screen.OnBoardingScreen.route) {
+            composable(Screen.SignUpRouteRoute.route) {
+                SignUpScreen(
+                    onBack = {
+                        navController.navigateUp()
+                    },
+                    onNext = {
+                        navController.navigate(Screen.OtpRouteRoute.route)
+                    }
+                )
+            }
+
+            composable(Screen.OnBoardingRoute.route) {
                 OnBoardingScreen(
                     onNavigateToMain = {
-                        navController.navigate(Screen.MainScreen.route) {
-                            popUpTo(Screen.OnBoardingScreen.route) { inclusive = true }
+                        navController.navigate(Screen.LoginScreenRoute.route) {
+                            popUpTo(Screen.OnBoardingRoute.route) { inclusive = true }
                         }
                     }
                 )
@@ -66,7 +89,7 @@ fun MyAppNavigator(
 
 
 
-            composable(Screen.SettingScreen.route) {
+            composable(Screen.SettingScreenRoute.route) {
                 SettingScreen(
                     onBack = {
                         navController.navigateUp()
@@ -74,9 +97,9 @@ fun MyAppNavigator(
                 )
             }
 
-            composable(Screen.MainScreen.route) {
+            composable(Screen.MainScreenRoute.route) {
                 MainScreen(onNavigateToSettingScreen = {
-                    navController.navigate(Screen.SettingScreen.route)
+                    navController.navigate(Screen.SettingScreenRoute.route)
                 })
             }
 

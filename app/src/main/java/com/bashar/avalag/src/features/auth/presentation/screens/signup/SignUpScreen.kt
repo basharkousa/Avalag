@@ -1,9 +1,6 @@
-package com.bashar.avalag.src.features.auth.presentation.screens.login
+package com.bashar.avalag.src.features.auth.presentation.screens.signup
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,17 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -53,12 +45,11 @@ import com.bashar.avalag.src.core.utils.TemplateEvents
 import com.bashar.avalag.src.core.utils.TemplateState
 import com.bashar.avalag.src.core.utils.ViewModelTemplate
 import com.bashar.avalag.src.features.auth.presentation.widgets.AuthTppBar
-import com.bashar.avalag.src.features.auth.presentation.widgets.OrDivider
 
 
 @Composable
-fun LoginScreen(
-    onNavigateToScreen: () -> Unit,
+fun SignUpScreen(
+    onNext: () -> Unit,
     onBack: () -> Unit,
     viewModel: ViewModelTemplate = hiltViewModel()
 ) {
@@ -68,9 +59,9 @@ fun LoginScreen(
         state = state,
         onEvent = { event ->
             when (event) {
-                is TemplateEvents.OnNavigateToScreen -> onNavigateToScreen()
+                is TemplateEvents.OnBackPress -> onBack()
 //                else -> viewModel.onEvent(event)
-                TemplateEvents.OnBackPress -> onBack()
+                TemplateEvents.OnNavigateToScreen -> onNext()
             }
         }
     )
@@ -93,9 +84,9 @@ private fun ScreenContent(
 
     Scaffold(
         topBar = {
-            AuthTppBar(stringResource = R.string.login, onBack = {
+            AuthTppBar(stringResource = R.string.sign_up, onBack = {
                 onEvent(TemplateEvents.OnBackPress)
-            }, canSkip = true)
+            },)
 //            LoginTopBar(
 //                title = "Login",
 //                onBack = { /* TODO hook up */ },
@@ -116,7 +107,7 @@ private fun ScreenContent(
             ) {
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text = stringResource(R.string.login_title),
+                    text = stringResource(R.string.please_enter_your_phone_number),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = Primary100,
                         fontWeight = FontWeight.W500
@@ -137,99 +128,26 @@ private fun ScreenContent(
 
                 Spacer(Modifier.height(12.dp))
 
-                // Password
+               /* // Password
                 DefaultTextField(
                     value = password,
                     onValueChange = { password = it },
                     placeholder = stringResource(R.string.password),
                     isPassword = true
-                )
+                )*/
 
-                Spacer(Modifier.height(14.dp))
-
-                // Links row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(R.string.create_new_account),
-                        color = MaterialTheme.colorScheme.primary,
-                        textDecoration = TextDecoration.Underline,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W500),
-                        modifier = Modifier.clickable { /* TODO */ }
-                    )
-                    Text(
-                        text = stringResource(R.string.forgot_password),
-                        color = MaterialTheme.colorScheme.primary,
-                        textDecoration = TextDecoration.Underline,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W500),
-                        modifier = Modifier.clickable { /* TODO */ }
-                    )
-                }
-
-                Spacer(Modifier.height(40.dp))
+                Spacer(Modifier.height(51.dp))
 
                 // Primary button
                 DefaultButton(
                     text = stringResource(R.string.next),
                     onClick = { onEvent(TemplateEvents.OnNavigateToScreen) }
                 )
-
-                Spacer(Modifier.height(20.dp))
-
-                // Divider with "Or"
-                OrDivider(label = stringResource(R.string.or))
-
-                Spacer(Modifier.height(20.dp))
-
-                // Secondary actions
-                DefaultButton(
-                    text = stringResource(R.string.continue_with_email),
-                    isOutlined = true,
-                    onClick = { /* ... */ }
-                )
-
-                Spacer(Modifier.height(20.dp))
-
-                DefaultButton(
-                    text = stringResource(R.string.continue_with_google),
-                    isOutlined = true,
-                    leadingIcon = {
-                        Icon(
-                            painterResource(R.drawable.ic_google),
-                            null,
-                             tint= Color.Unspecified,
-                            modifier = Modifier.size(18.dp),
-
-                        )
-                    },
-                    onClick = { /* ... */ }
-                )
-
-                Spacer(Modifier.height(20.dp))
-
-                DefaultButton(
-                    text = stringResource(R.string.log_in_using_facebook),
-                    isOutlined = true,
-                    leadingIcon = {
-                        Icon(
-                            painterResource(R.drawable.ic_facebook),
-                            null,
-                            tint= Color.Unspecified,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    },
-                    onClick = { /* ... */ }
-                )
-
                 Spacer(Modifier.height(24.dp))
             }
         }
     }
 }
-
-
 
 
 

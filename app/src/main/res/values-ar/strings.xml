@@ -34,4 +34,9 @@
     <string name="continue_with_google">متابعة ب Google</string>
     <string name="log_in_using_facebook">متابعة ب Facebook</string>
     <string name="continue_with_email">تسجيل بواسطة الإيميل</string>
+    <string name="skip">تخطي</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="please_enter_your_phone_number">Please enter your phone number</string>
+    <string name="activation_code">Activation Code</string>
+    <string name="please_enter_the_code_we_sent_to_number">Please enter the 6-digit code we sent to your phone number +9634234234234</string>
 </resources>

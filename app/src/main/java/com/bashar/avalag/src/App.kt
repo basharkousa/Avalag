@@ -66,7 +66,7 @@ fun MyApp(vm: SettingsViewModel = hiltViewModel(), content: @Composable () -> Un
 //                    val isSplash = currentRoute(navController) == Screen.SplashScreen.route
 //                    StatusBarVisible(visible = !isSplash)
 
-                    BackHandler(enabled = (currentRoute(navController) === Screen.MainScreen.route)) {
+                    BackHandler(enabled = (currentRoute(navController) === Screen.MainScreenRoute.route)) {
 
                         val currentTime = System.currentTimeMillis()
                         println("currentTime: $currentTime")
