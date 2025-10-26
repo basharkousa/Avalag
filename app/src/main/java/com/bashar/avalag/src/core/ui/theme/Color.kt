@@ -9,7 +9,7 @@ val brandColor = Color(0xFF464936)
 val primary500 = Color(0xFF000000)
 val primary300 = Color(0xFF40424D)
 val primary200 = Color(0xFF6E7180)
-val primary100 = Color(0xFF9DA2B3)
+val Primary100 = Color(0xFF9DA2B3)
 val primary50  = Color(0xFFBCBFCC)
 val primary25  = Color(0xFFD3D6E0)
 val primaryWhite = Color(0xFFFFFFFF)
@@ -54,7 +54,7 @@ val LightColorScheme = lightColorScheme(
 )
 
 val DarkColorScheme = darkColorScheme(
- primary = primary100,         // a lighter brand tone for dark
+ primary = Primary100,         // a lighter brand tone for dark
  onPrimary = OnDarkPrimary,
  secondary = LightSecondary,   // keep if it passes contrast
  tertiary = Tertiary,

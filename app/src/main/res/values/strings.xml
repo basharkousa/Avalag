@@ -21,4 +21,16 @@
     <string name="close">Close</string>
     <string name="onboarding_title_1">Get Started with\\nSmart Styling</string>
     <string name="onboarding_subtitle_1">Set up your fashion preferences for a personalized AI-powered experience.</string>
+    <string name="login">Login</string>
+    <string name="login_title">Enter the phone number registered with the application</string>
+    <string name="password">Password</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="code">Code</string>
+    <string name="create_new_account">Create new account</string>
+    <string name="forgot_password">Forget Password?</string>
+    <string name="next">Next</string>
+    <string name="or">Or</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="log_in_using_facebook">Log in using Facebook</string>
+    <string name="continue_with_email">Log in using email</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.bashar.avalag.src.core.ui.navigation
+package com.bashar.avalag.src.core.navigation
 
 
 //object NavigationScreen {
@@ -15,6 +15,7 @@ sealed class Screen(val route: String) {
     data object OnBoardingScreen : Screen("onBoardingScreen")
     data object MainScreen : Screen("mainScreen")
     data object SettingScreen : Screen("settingScreen")
+    data object LoginScreen : Screen("loginScreen")
     data object HomeScreen : Screen("homeScreen")
 
 

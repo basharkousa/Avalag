@@ -13,6 +13,7 @@ val Shapes = Shapes(
     extraSmall = RoundedCornerShape(4.dp),   // e.g., small chips, icons
     small = RoundedCornerShape(8.dp),        // text fields, small buttons
     medium = RoundedCornerShape(12.dp),      // cards, containers
-    large = RoundedCornerShape(16.dp),       // dialogs, sheets
-    extraLarge = RoundedCornerShape(24.dp)   // modals, bottom sheets
+    large = RoundedCornerShape(16.dp,),       // dialogs, sheets
+    extraLarge = RoundedCornerShape(24.dp),
+    // modals, bottom sheets
 )
