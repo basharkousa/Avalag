@@ -27,8 +27,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bashar.avalag.R
 import com.bashar.avalag.src.core.ui.theme.Primary100
 import com.bashar.avalag.src.core.ui.widgets.DefaultButton
-import com.bashar.avalag.src.core.ui.widgets.DefaultTextField
-import com.bashar.avalag.src.core.ui.widgets.defaultCountries
 import com.bashar.avalag.src.core.utils.TemplateEvents
 import com.bashar.avalag.src.core.utils.TemplateState
 import com.bashar.avalag.src.core.utils.ViewModelTemplate
@@ -63,16 +61,14 @@ private fun ScreenContent(
     onEvent: (TemplateEvents) -> Unit = {}
 ) {
 
+    var otp by remember { mutableStateOf("") }
+    val otpError by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             AuthTppBar(stringResource = R.string.activation_code, onBack = {
                 onEvent(TemplateEvents.OnBackPress)
             },)
-//            LoginTopBar(
-//                title = "Login",
-//                onBack = { /* TODO hook up */ },
-//                onSkip = { /* TODO hook up */ }
-//            )
         }
     ) { padding ->
         Box(
@@ -98,12 +94,11 @@ private fun ScreenContent(
                 Spacer(Modifier.height(40.dp))
 
                 // Phone row (country + phone)
-                val otp by remember { mutableStateOf("") }
-                val otpError by remember { mutableStateOf(false) }
                 OtpField(
 //                    value = state.otp,                           // add otp: String = "" to TemplateState
                     value = otp,                           // add otp: String = "" to TemplateState
                     onValueChange = { code ->
+                        otp = code
 //                        onEvent(TemplateEvents.OnOtpChanged(code)) // add this event in your template
                     },
                     length = 6,
@@ -115,7 +110,7 @@ private fun ScreenContent(
                     }
                 )
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(30.dp))
 
                 // Primary button
                 DefaultButton(

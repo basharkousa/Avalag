@@ -1,6 +1,5 @@
 package com.bashar.avalag.src.features.auth.presentation.widgets
 
-import android.R.attr.contentDescription
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,13 +29,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.bashar.avalag.src.core.ui.theme.Primary100
 
 @Composable
 fun OtpField(
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
     length: Int = 6,
-    modifier: Modifier = Modifier,
     isError: Boolean = false,
     enabled: Boolean = true,
     onFilled: (String) -> Unit = {}
@@ -91,21 +90,23 @@ fun OtpField(
                         val borderColor = when {
                             isError -> MaterialTheme.colorScheme.error
                             focused -> MaterialTheme.colorScheme.primary
-                            else -> MaterialTheme.colorScheme.outline
+                            else -> Primary100
                         }
-
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .height(56.dp)
                                 .border(
-                                    width = 1.5.dp,
+                                    width = 1.dp,
                                     color = borderColor,
                                     shape = MaterialTheme.shapes.large
                                 )
                                 .clip(MaterialTheme.shapes.large)
-                                .background(MaterialTheme.colorScheme.surface)
-                                .clickable(enabled = enabled) { /* bring focus */ },
+                                .background(MaterialTheme.colorScheme.background)
+                                .clickable(enabled = enabled) {
+//                                    if(enabled)println("clickEnabled")else println("clickDisabled")
+//                                    focusRequester.requestFocus()
+                                },
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -116,15 +117,25 @@ fun OtpField(
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                         }
+
+                        if(index == 2){
+                            Box(
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.background).align(Alignment.CenterVertically)
+                            ){
+//                                HorizontalDivider(thickness= 1.dp, color = MaterialTheme.colorScheme.onBackground ,modifier = Modifier.width(1.dp))
+                                Text("-",style = MaterialTheme.typography.bodyLarge.copy(),color = Primary100)
+                            }
+                        }
                     }
                 }
                 // Invisible field overlay to actually capture input
-                Box(
+                /*Box(
                     modifier = Modifier
                         .matchParentSize()
                         .padding(0.dp),
                     contentAlignment = Alignment.Center
-                ) { innerTextField() }
+                ) { innerTextField() }*/
             }
         )
     }
