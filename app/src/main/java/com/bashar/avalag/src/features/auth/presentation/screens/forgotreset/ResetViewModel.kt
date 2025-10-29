@@ -1,25 +1,22 @@
-package com.bashar.avalag.src.features.auth.presentation.screens.login
+package com.bashar.avalag.src.features.auth.presentation.screens.forgotreset
 
 import androidx.lifecycle.ViewModel
 import com.bashar.avalag.src.features.auth.domain.repositories.AuthRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import javax.inject.Inject
 
 
-@HiltViewModel
-class LoginViewModel @Inject constructor(
-//    private val repo: AuthRepository,
+class ResetViewModel(
+    private val repo: AuthRepository,
 ) : ViewModel() {
 
 
-    private val _state = MutableStateFlow(LoginState())
-    val state: StateFlow<LoginState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(ResetState())
+    val state: StateFlow<ResetState> = _state.asStateFlow()
 
 
-    fun onEvent(event: LoginEvent) {
+    fun onEvent(event: ResetEvent) {
 //        when (event) {
 //            is LoginEvent.EmailChanged -> _state.value = _state.value.copy(email = event.value)
 //            is LoginEvent.PasswordChanged -> _state.value = _state.value.copy(password = event.value)

@@ -1,6 +1,7 @@
 package com.bashar.avalag.src.features.auth.presentation.screens.login
 
 import androidx.compose.runtime.Immutable
+import com.bashar.avalag.src.core.utils.TemplateEvents
 
 @Immutable
 data class LoginState(
@@ -23,6 +24,12 @@ data class LoginState(
 
 
 sealed interface LoginEvent {
+
+    data object OnBackPress : LoginEvent
+    data class OnNavigateToForgotScreen(val value: String,) : LoginEvent
+    data object OnNavigateToSignUpScreen : LoginEvent
+    data class OnNavigateToOtpScreen(val value: String,) : LoginEvent
+     object OnSkip : LoginEvent
     data class EmailChanged(val value: String,) : LoginEvent
     data class PasswordChanged(val value: String) : LoginEvent
     data object TogglePasswordVisibility : LoginEvent

@@ -11,6 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.bashar.avalag.src.features.auth.presentation.screens.forgotreset.ForgotScreen
+import com.bashar.avalag.src.features.auth.presentation.screens.forgotreset.ResetScreen
 import com.bashar.avalag.src.features.auth.presentation.screens.login.LoginScreen
 import com.bashar.avalag.src.features.auth.presentation.screens.otp.OtpScreen
 import com.bashar.avalag.src.features.auth.presentation.screens.signup.SignUpScreen
@@ -50,9 +52,21 @@ fun MyAppNavigator(
                     onBack = {
                         navController.navigateUp()
                     },
-                    onNavigateToScreen = {
+                    onNext = {
+                        navController.navigate(Screen.OtpRouteRoute.route)
+                    },
+                    onSkip = {
+                        navController.navigate(Screen.MainScreenRoute.route){
+//                            popUpTo(Screen.LoginScreenRoute.route) { inclusive = true }
+                        }
+                    },
+                    onForgotPassword = {
+                        navController.navigate(Screen.ForgotRoute.route)
+                    },
+                    onSignUp = {
                         navController.navigate(Screen.SignUpRouteRoute.route)
-                    }
+                    },
+
                 )
             }
             composable(Screen.OtpRouteRoute.route) {
@@ -73,6 +87,30 @@ fun MyAppNavigator(
                     },
                     onNext = {
                         navController.navigate(Screen.OtpRouteRoute.route)
+                    }
+                )
+            }
+
+            //todo nested graph
+            composable(Screen.ForgotRoute.route) {
+                ForgotScreen(
+                    onBack = {
+                        navController.navigateUp()
+                    },
+                    onNext = {
+                        navController.navigate(Screen.OtpRouteRoute.route)
+                    }
+                )
+            }
+            composable(Screen.ResetRoute.route) {
+                ResetScreen(
+                    onBack = {
+                        navController.navigateUp()
+                    },
+                    onNext = {
+                        navController.navigate(Screen.LoginScreenRoute.route){
+                            popUpTo(Screen.ResetRoute.route) { inclusive = true }
+                        }
                     }
                 )
             }

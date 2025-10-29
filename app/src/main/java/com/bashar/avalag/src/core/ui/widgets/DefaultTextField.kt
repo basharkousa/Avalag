@@ -4,9 +4,11 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -36,13 +38,14 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bashar.avalag.R
 import com.bashar.avalag.src.core.ui.theme.Primary100
-
 
 
 // --- Simple model for the dropdown ---
@@ -63,6 +66,7 @@ fun defaultCountries() = listOf(
  * When isPhone = true -> renders Row(country dropdown + number text field)
  * Otherwise -> behaves exactly like your original DefaultTextField.
  */
+@Preview(showBackground = true)
 @Composable
 fun DefaultTextField(
     modifier: Modifier = Modifier,
@@ -70,6 +74,7 @@ fun DefaultTextField(
     onValueChange: (String) -> Unit = {},
     placeholder: String = "Password",
     label: String? = null,
+    title: String? = null,
     isPassword: Boolean = false,
     // NEW: phone mode controls
     isPhone: Boolean = false,
@@ -89,75 +94,90 @@ fun DefaultTextField(
     ),
     onFocusChange: ((Boolean) -> Unit)? = null,
 ) {
-    if (isPhone) {
-        PhoneField(
-            modifier = modifier,
-            number = value,
-            onNumberChange = onValueChange,
-            country = country,
-            onCountryChange = onCountryChange,
-            countries = countries,
-            placeholder = placeholder,
-            enabled = enabled,
-            shape = shape,
-            textStyle = textStyle,
-            onFocusChange = onFocusChange
-        )
-    } else {
-        // --- your original text field (unchanged) ---
-        var isPasswordVisible by remember { mutableStateOf(false) }
 
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            enabled = enabled,
-            singleLine = singleLine,
-            maxLines = maxLines,
-            modifier = modifier
-                .fillMaxWidth()
-                .onFocusChanged { onFocusChange?.invoke(it.isFocused) },
-            textStyle = textStyle,
-            shape = shape,
-            placeholder = {
-                Text(
-                    placeholder,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Primary100
+
+    Column {
+        title?.let {
+            Text(
+                title,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.W500
                 )
-            },
-            label = label?.let { { Text(it) } },
-            visualTransformation = if (isPassword && !isPasswordVisible)
-                PasswordVisualTransformation() else VisualTransformation.None,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = if (isPassword) KeyboardType.Password else keyboardType
-            ),
-            leadingIcon = leadingIcon,
-            trailingIcon = {
-                when {
-                    isPassword -> {
-                        IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                            Icon(
-                                painterResource(
-                                    if (isPasswordVisible) R.drawable.ic_visibility_off
-                                    else R.drawable.ic_visibility
-                                ),
-                                contentDescription = null,
-                                tint = Primary100,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
-                    trailingIcon != null -> trailingIcon()
-                }
-            },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-                cursorColor = MaterialTheme.colorScheme.primary,
             )
-        )
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        if (isPhone) {
+            PhoneField(
+                modifier = modifier,
+                number = value,
+                onNumberChange = onValueChange,
+                country = country,
+                onCountryChange = onCountryChange,
+                countries = countries,
+                placeholder = placeholder,
+                enabled = enabled,
+                shape = shape,
+                textStyle = textStyle,
+                onFocusChange = onFocusChange
+            )
+        } else {
+            // --- your original text field (unchanged) ---
+            var isPasswordVisible by remember { mutableStateOf(false) }
+
+            OutlinedTextField(
+                value = value,
+                onValueChange = onValueChange,
+                enabled = enabled,
+                singleLine = singleLine,
+                maxLines = maxLines,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .onFocusChanged { onFocusChange?.invoke(it.isFocused) },
+                textStyle = textStyle,
+                shape = shape,
+                placeholder = {
+                    Text(
+                        placeholder,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Primary100
+                    )
+                },
+                label = label?.let { { Text(it) } },
+                visualTransformation = if (isPassword && !isPasswordVisible)
+                    PasswordVisualTransformation() else VisualTransformation.None,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = if (isPassword) KeyboardType.Password else keyboardType
+                ),
+                leadingIcon = leadingIcon,
+                trailingIcon = {
+                    when {
+                        isPassword -> {
+                            IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                                Icon(
+                                    painterResource(
+                                        if (isPasswordVisible) R.drawable.ic_visibility_off
+                                        else R.drawable.ic_visibility
+                                    ),
+                                    contentDescription = null,
+                                    tint = Primary100,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+
+                        trailingIcon != null -> trailingIcon()
+                    }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                )
+            )
+        }
     }
 }
 
@@ -205,7 +225,13 @@ private fun PhoneField(
                     CountryFlag(flagRes = country.flagRes)
                 },
                 trailingIcon = { Icon(Icons.Default.KeyboardArrowDown, contentDescription = null) },
-                placeholder = { Text(stringResource(R.string.code), style = MaterialTheme.typography.bodyMedium, color = Primary100) },
+                placeholder = {
+                    Text(
+                        stringResource(R.string.code),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Primary100
+                    )
+                },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.background,
                     unfocusedContainerColor = MaterialTheme.colorScheme.background,
@@ -246,9 +272,11 @@ private fun PhoneField(
             textStyle = textStyle,
             shape = shape,
             placeholder = {
-                Text(placeholder.ifBlank { "phone number" },
+                Text(
+                    placeholder.ifBlank { "phone number" },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Primary100)
+                    color = Primary100
+                )
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
             colors = OutlinedTextFieldDefaults.colors(

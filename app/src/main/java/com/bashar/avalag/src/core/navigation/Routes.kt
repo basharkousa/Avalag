@@ -12,11 +12,16 @@ package com.bashar.avalag.src.core.navigation
 sealed class Screen(val route: String) {
 
     data object SplashRoute : Screen("splashScreen")
+
     data object OnBoardingRoute : Screen("onBoardingScreen")
     data object MainScreenRoute : Screen("mainScreen")
+
     data object SettingScreenRoute : Screen("settingScreen")
+
     data object LoginScreenRoute : Screen("loginScreen")
     data object SignUpRouteRoute : Screen("signupScreen")
+    data object ForgotRoute : Screen("ForgotRoute")
+    data object ResetRoute : Screen("ResetRoute")
     data object OtpRouteRoute : Screen("otpRouteRoute")
     data object HomeScreenRoute : Screen("homeScreen")
 
