@@ -89,24 +89,20 @@ private fun SplashContent(
     // Handle navigation when loading completes
     val window = LocalActivity.current?.window
     LaunchedEffect(state.isLoading){
-        window?.let {
-            WindowCompat.setDecorFitsSystemWindows(it, false)
-            WindowInsetsControllerCompat(it, it.decorView).apply {
-                hide(WindowInsetsCompat.Type.statusBars())
-                systemBarsBehavior =
-                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            }
-        }
+//        window?.let {
+//            WindowCompat.setDecorFitsSystemWindows(it, false)
+//            WindowInsetsControllerCompat(it, it.decorView).apply {
+//                hide(WindowInsetsCompat.Type.statusBars())
+//                systemBarsBehavior =
+//                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+//            }
+//        }
         if (!state.isLoading) {
 
             onEvent(SplashEvents.NavigateToMainScreen)
 //            onFinished()
 
-            window?.let {
-                WindowInsetsControllerCompat(it, it.decorView)
-                    .show(WindowInsetsCompat.Type.statusBars())
-                WindowCompat.setDecorFitsSystemWindows(it, true)
-            }
+//
         }
     }
     Scaffold() {
