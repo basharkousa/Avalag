@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.bashar.avalag.src.core.ui.navigation.MyAppNavigator
-import com.bashar.avalag.src.core.ui.navigation.Screen
-import com.bashar.avalag.src.core.ui.navigation.currentRoute
+import com.bashar.avalag.src.core.navigation.MyAppNavigator
+import com.bashar.avalag.src.core.navigation.Screen
+import com.bashar.avalag.src.core.navigation.currentRoute
 import com.bashar.avalag.src.core.ui.theme.AvalagTheme
 import com.bashar.avalag.src.features.setting.domain.models.ThemeMode
 import com.bashar.avalag.src.features.setting.presentation.screens.SettingsViewModel
@@ -66,7 +66,7 @@ fun MyApp(vm: SettingsViewModel = hiltViewModel(), content: @Composable () -> Un
 //                    val isSplash = currentRoute(navController) == Screen.SplashScreen.route
 //                    StatusBarVisible(visible = !isSplash)
 
-                    BackHandler(enabled = (currentRoute(navController) === Screen.MainScreen.route)) {
+                    BackHandler(enabled = (currentRoute(navController) === Screen.MainScreenRoute.route)) {
 
                         val currentTime = System.currentTimeMillis()
                         println("currentTime: $currentTime")

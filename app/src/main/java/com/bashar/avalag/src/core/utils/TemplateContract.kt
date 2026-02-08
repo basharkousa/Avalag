@@ -9,9 +9,11 @@ data class TemplateState(
 )
 
 sealed class TemplateEvents {
-//    data class OnNavigateToScreen(val it: Int) : TemplateEvents()
+    data object OnBackPress : TemplateEvents()
+    data object OnNavigateToScreen :TemplateEvents()
 //    data class ToggleFavorite(val gymId: Int) : TemplateEvents()
 //    data class ShowSnackBar(val message: String): TemplateEvents()
 //    object Refresh : TemplateEvents()
 //    data class Search(val query: String) : TemplateEvents()
+
 }
