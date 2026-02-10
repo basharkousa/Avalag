@@ -35,10 +35,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bashar.avalag.R
+import com.bashar.avalag.src.core.ui.theme.AvalagTheme
 import com.bashar.avalag.src.core.ui.theme.Primary100
 import com.bashar.avalag.src.core.ui.widgets.DefaultButton
 import com.bashar.avalag.src.core.ui.widgets.DefaultTextField
 import com.bashar.avalag.src.core.ui.widgets.defaultCountries
+import com.bashar.avalag.src.core.utils.AvalagMultiPreview
+import com.bashar.avalag.src.core.utils.AvalagPreview
 
 import com.bashar.avalag.src.features.auth.presentation.widgets.AuthTppBar
 import com.bashar.avalag.src.features.auth.presentation.widgets.OrDivider
@@ -79,7 +82,7 @@ fun LoginScreen(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true, showSystemUi = true)
+@AvalagMultiPreview
 @Composable
 private fun ScreenContent(
     state: LoginState = LoginState(),
@@ -93,150 +96,153 @@ private fun ScreenContent(
 
     var password by remember { mutableStateOf("") }
 
-    Scaffold(
-        topBar = {
-            AuthTppBar(stringResource = R.string.login, onBack = {
-                onEvent(LoginEvent.OnBackPress)
-            }, canSkip = true, onSkip = {
-                onEvent(LoginEvent.OnSkip)
-            })
+
+        Scaffold(
+            topBar = {
+                AuthTppBar(stringResource = R.string.login, onBack = {
+                    onEvent(LoginEvent.OnBackPress)
+                }, canSkip = true, onSkip = {
+                    onEvent(LoginEvent.OnSkip)
+                })
 //            LoginTopBar(
 //                title = "Login",
 //                onBack = { /* TODO hook up */ },
 //                onSkip = { /* TODO hook up */ }
 //            )
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-        ) {
-            Column(
+            }
+        ) { padding ->
+            Box(
                 modifier = Modifier
+                    .padding(padding)
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp).verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.Top
             ) {
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = stringResource(R.string.login_title),
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = Primary100,
-                        fontWeight = FontWeight.W500
-                    )
-                )
-
-                Spacer(Modifier.height(40.dp))
-
-                // Phone row (country + phone)
-                DefaultTextField(
-                    isPhone = true,
-                    country = country,
-                    onCountryChange = { country = it },
-                    value = phone,
-                    onValueChange = { phone = it },
-                    placeholder = stringResource(R.string.phone_number)
-                )
-
-                Spacer(Modifier.height(12.dp))
-
-                // Password
-                DefaultTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    placeholder = stringResource(R.string.password),
-                    isPassword = true
-                )
-
-                Spacer(Modifier.height(14.dp))
-
-                // Links row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp).verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Top
                 ) {
+                    Spacer(Modifier.height(8.dp))
                     Text(
-                        text = stringResource(R.string.create_new_account),
-                        color = MaterialTheme.colorScheme.primary,
-                        textDecoration = TextDecoration.Underline,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W500),
-                        modifier = Modifier.clickable {
-                            onEvent(LoginEvent.OnNavigateToSignUpScreen)
-                        }
+                        text = stringResource(R.string.login_title),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = Primary100,
+                            fontWeight = FontWeight.W500
+                        )
                     )
-                    Text(
-                        text = stringResource(R.string.forgot_password),
-                        color = MaterialTheme.colorScheme.primary,
-                        textDecoration = TextDecoration.Underline,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W500),
-                        modifier = Modifier.clickable {
-                            onEvent(LoginEvent.OnNavigateToForgotScreen(phone))
-                        }
+
+                    Spacer(Modifier.height(40.dp))
+
+                    // Phone row (country + phone)
+                    DefaultTextField(
+                        isPhone = true,
+                        country = country,
+                        onCountryChange = { country = it },
+                        value = phone,
+                        onValueChange = { phone = it },
+                        placeholder = stringResource(R.string.phone_number)
                     )
-                }
 
-                Spacer(Modifier.height(40.dp))
+                    Spacer(Modifier.height(12.dp))
 
-                // Primary button
-                DefaultButton(
-                    text = stringResource(R.string.next),
-                    onClick = { onEvent(LoginEvent.OnNavigateToOtpScreen(phone)) }
-                )
+                    // Password
+                    DefaultTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        placeholder = stringResource(R.string.password),
+                        isPassword = true
+                    )
 
-                Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.height(14.dp))
 
-                // Divider with "Or"
-                OrDivider(label = stringResource(R.string.or))
-
-                Spacer(Modifier.height(20.dp))
-
-                // Secondary actions
-                DefaultButton(
-                    text = stringResource(R.string.continue_with_email),
-                    isOutlined = true,
-                    onClick = {
-
+                    // Links row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = stringResource(R.string.create_new_account),
+                            color = MaterialTheme.colorScheme.primary,
+                            textDecoration = TextDecoration.Underline,
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W500),
+                            modifier = Modifier.clickable {
+                                onEvent(LoginEvent.OnNavigateToSignUpScreen)
+                            }
+                        )
+                        Text(
+                            text = stringResource(R.string.forgot_password),
+                            color = MaterialTheme.colorScheme.primary,
+                            textDecoration = TextDecoration.Underline,
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W500),
+                            modifier = Modifier.clickable {
+                                onEvent(LoginEvent.OnNavigateToForgotScreen(phone))
+                            }
+                        )
                     }
-                )
 
-                Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.height(40.dp))
 
-                DefaultButton(
-                    text = stringResource(R.string.continue_with_google),
-                    isOutlined = true,
-                    leadingIcon = {
-                        Icon(
-                            painterResource(R.drawable.ic_google),
-                            null,
-                             tint= Color.Unspecified,
-                            modifier = Modifier.size(18.dp),
+                    // Primary button
+                    DefaultButton(
+                        text = stringResource(R.string.next),
+                        onClick = { onEvent(LoginEvent.OnNavigateToOtpScreen(phone)) }
+                    )
 
-                        )
-                    },
-                    onClick = { /* ... */ }
-                )
+                    Spacer(Modifier.height(20.dp))
 
-                Spacer(Modifier.height(20.dp))
+                    // Divider with "Or"
+                    OrDivider(label = stringResource(R.string.or))
 
-                DefaultButton(
-                    text = stringResource(R.string.log_in_using_facebook),
-                    isOutlined = true,
-                    leadingIcon = {
-                        Icon(
-                            painterResource(R.drawable.ic_facebook),
-                            null,
-                            tint= Color.Unspecified,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    },
-                    onClick = { /* ... */ }
-                )
+                    Spacer(Modifier.height(20.dp))
 
-                Spacer(Modifier.height(24.dp))
+                    // Secondary actions
+                    DefaultButton(
+                        text = stringResource(R.string.continue_with_email),
+                        isOutlined = true,
+                        onClick = {
+
+                        }
+                    )
+
+                    Spacer(Modifier.height(20.dp))
+
+                    DefaultButton(
+                        text = stringResource(R.string.continue_with_google),
+                        isOutlined = true,
+                        leadingIcon = {
+                            Icon(
+                                painterResource(R.drawable.ic_google),
+                                null,
+                                tint= Color.Unspecified,
+                                modifier = Modifier.size(18.dp),
+
+                                )
+                        },
+                        onClick = { /* ... */ }
+                    )
+
+                    Spacer(Modifier.height(20.dp))
+
+                    DefaultButton(
+                        text = stringResource(R.string.log_in_using_facebook),
+                        isOutlined = true,
+                        leadingIcon = {
+                            Icon(
+                                painterResource(R.drawable.ic_facebook),
+                                null,
+                                tint= Color.Unspecified,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        },
+                        onClick = { /* ... */ }
+                    )
+
+                    Spacer(Modifier.height(24.dp))
+                }
             }
         }
-    }
+
+
 }
 
 

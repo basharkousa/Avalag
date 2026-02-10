@@ -22,6 +22,10 @@
     <string name="close">إغلاق</string>
     <string name="onboarding_title_1">ابدأ بأسلوب ذكي</string>
     <string name="onboarding_subtitle_1">قم بضبط تفضيلاتك في الأزياء لتجربة مخصصة مدعومة بالذكاء الاصطناعي.</string>
+    <string name="home">الرئيسية</string>
+    <string name="cart">السلة</string>
+    <string name="orders">الطلبات</string>
+    <string name="profile">الشخصية</string>
     <string name="login">تسجيل الدخول</string>
     <string name="login_title">أدخل رقم الهاتف المسجل لدى التطبيق</string>
     <string name="password">كلمة المرور</string>

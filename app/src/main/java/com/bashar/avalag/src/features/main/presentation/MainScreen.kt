@@ -1,58 +1,68 @@
 package com.bashar.avalag.src.features.main.presentation
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+// main/presentation/MainScreen.kt
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import com.bashar.avalag.R
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.*
+import com.bashar.avalag.src.core.ui.theme.AvalagTheme
+import com.bashar.avalag.src.core.utils.AvalagMultiPreview
+import kotlinx.coroutines.flow.StateFlow
+import com.bashar.avalag.src.core.ui.widgets.FloatingBottomBar
 
-
-@Preview
+@AvalagMultiPreview()
 @Composable
 fun MainScreen(
-    onNavigateToSettingScreen: () -> Unit = {},
-//    viewModel: ViewModelTemplate = hiltViewModel()
+    cartBadgeCount: StateFlow<Int>? = null, // optional: pass from VM if you have it
+    startDestination: String = MainDestination.Home.route,
+    homeContent: @Composable () -> Unit = {},
+    cartContent: @Composable () -> Unit = {},
+    ordersContent: @Composable () -> Unit = {},
+    profileContent: @Composable () -> Unit = {}
 ) {
+    val navController = rememberNavController()
+    val backstackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = backstackEntry?.destination
 
-//    val state by viewModel.state
+    val badge by cartBadgeCount?.collectAsState(initial = 0) ?: remember { mutableStateOf(0) }
 
-    val lastBackPressTime = remember { mutableStateOf(0L) }
-    val context = LocalContext.current
-//    val activity = (LocalContext.current as? Activity)
 
-    Scaffold {
-        Surface(
-            modifier = Modifier.padding(it)
-
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Box(modifier = Modifier.clickable{
-                    onNavigateToSettingScreen()
-                }, contentAlignment = Alignment.Center) {
-                    Text(
-                        stringResource(R.string.main_screen),
-                        
-                    )
+    Scaffold(
+//        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.25f),
+        bottomBar = {
+            val currentRoute = currentDestination?.route
+            FloatingBottomBar(
+                currentDestinationRoute = currentRoute,
+                cartBadge = badge,
+                onTabClick = { dest ->
+                    navController.navigate(dest.route) {
+                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
-            }
+            )
+        }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(MainDestination.Home.route)   { homeContent() }
+            composable(MainDestination.Cart.route)   { cartContent() }
+            composable(MainDestination.Orders.route) { ordersContent() }
+            composable(MainDestination.Profile.route){ profileContent() }
         }
     }
 
+}
+
+private fun NavDestination?.isOnDestination(route: String): Boolean {
+    return this?.hierarchy?.any { it.route == route } == true
 }

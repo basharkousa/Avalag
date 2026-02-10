@@ -17,6 +17,7 @@ import com.bashar.avalag.src.features.auth.presentation.screens.login.LoginScree
 import com.bashar.avalag.src.features.auth.presentation.screens.otp.OtpScreen
 import com.bashar.avalag.src.features.auth.presentation.screens.signup.SignUpScreen
 import com.bashar.avalag.src.features.main.presentation.MainScreen
+import com.bashar.avalag.src.features.main.presentation.TestScreen
 import com.bashar.avalag.src.features.onboarding.presentation.OnBoardingScreen
 import com.bashar.avalag.src.features.setting.presentation.screens.SettingScreen
 import com.bashar.avalag.src.features.splash.presentation.SplashScreen
@@ -41,7 +42,7 @@ fun MyAppNavigator(
             composable(Screen.SplashRoute.route) {
                 SplashScreen(
                     onNavigateToScreen = {
-                        navController.navigate(Screen.OnBoardingRoute.route) {
+                        navController.navigate(Screen.MainScreenRoute.route) {
                             popUpTo(Screen.SplashRoute.route) { inclusive = true }
                         }
                     }
@@ -136,9 +137,14 @@ fun MyAppNavigator(
             }
 
             composable(Screen.MainScreenRoute.route) {
-                MainScreen(onNavigateToSettingScreen = {
-                    navController.navigate(Screen.SettingScreenRoute.route)
-                })
+                MainScreen(
+                    homeContent = { TestScreen(title = "Home", onClick = {
+                        navController.navigate(Screen.SettingScreenRoute.route)
+                    }) },       // from Home feature
+                    cartContent = { TestScreen("Cart") },       // from Cart feature
+                    ordersContent = { TestScreen("Orders") },   // from Orders feature
+                    profileContent = { TestScreen("Profile") }  // from Profile feature
+                )
             }
 
 

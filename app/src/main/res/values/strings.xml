@@ -21,6 +21,10 @@
     <string name="close">Close</string>
     <string name="onboarding_title_1">Get Started with\\nSmart Styling</string>
     <string name="onboarding_subtitle_1">Set up your fashion preferences for a personalized AI-powered experience.</string>
+    <string name="home">Home</string>
+    <string name="cart">Cart</string>
+    <string name="orders">Orders</string>
+    <string name="profile">Profile</string>
     <string name="login">Login</string>
     <string name="login_title">Enter the phone number registered with the application</string>
     <string name="password">Password</string>
