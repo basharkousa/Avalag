@@ -4,9 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,7 +29,6 @@ val LocalNavController = compositionLocalOf<NavHostController>() {
 @Composable
 fun MyAppNavigator(
     navController: NavHostController = rememberNavController(),
-    navigatorBottomNavigation: NavHostController,
     startDestination: String = Screen.SplashRoute.route,
 ) {
 
