@@ -19,21 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.bashar.avalag.R
 
-// main/presentation/MainEntry.kt
-@Composable
-fun MainEntry() {
-    MainScreen(
-        homeContent = { TestScreen(title = "Home") },       // from Home feature
-        cartContent = { TestScreen("Cart") },       // from Cart feature
-        ordersContent = { TestScreen("Orders") },   // from Orders feature
-        profileContent = { TestScreen("Profile") }  // from Profile feature
-    )
-}
-
-
-
-
-
 @Preview
 @Composable
 fun TestScreen(
@@ -41,26 +26,21 @@ fun TestScreen(
     onClick:()->Unit = {}
 ) {
 
-    Scaffold {
-        Surface(
-            modifier = Modifier.padding(it).clickable{
-                onClick()
-            }
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
+    Scaffold { innerPadding ->
+        Column(
+                modifier = Modifier.padding(innerPadding).fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Box(modifier = Modifier.clickable{
-
+                      onClick()
                 }, contentAlignment = Alignment.Center) {
                     Text(
                         title,
                         )
                 }
             }
-        }
+
     }
 
 }

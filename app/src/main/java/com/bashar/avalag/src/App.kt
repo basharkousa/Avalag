@@ -56,7 +56,7 @@ fun MyApp(vm: SettingsViewModel = hiltViewModel(), content: @Composable () -> Un
             color = MaterialTheme.colorScheme.background
         ) {
             Column {
-                MyAppNavigator(navController, navigatorBottomNavigation, modifier = Modifier)
+                MyAppNavigator(navController, navigatorBottomNavigation,)
                 Surface {
 //                    val systemUiController: SystemUiControll = rememberSystemUiController()
 //                    systemUiController.isStatusBarVisible =

@@ -19,7 +19,7 @@ import com.bashar.avalag.src.features.setting.domain.models.Language
 fun AvalagTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     language: Language = Language.English,
     content: @Composable () -> Unit
 ) {

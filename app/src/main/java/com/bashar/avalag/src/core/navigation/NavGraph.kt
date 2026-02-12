@@ -6,6 +6,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,7 +33,6 @@ fun MyAppNavigator(
     navController: NavHostController = rememberNavController(),
     navigatorBottomNavigation: NavHostController,
     startDestination: String = Screen.SplashRoute.route,
-    modifier: Modifier = Modifier,
 ) {
 
 
@@ -42,7 +42,7 @@ fun MyAppNavigator(
             composable(Screen.SplashRoute.route) {
                 SplashScreen(
                     onNavigateToScreen = {
-                        navController.navigate(Screen.MainScreenRoute.route) {
+                        navController.navigate(Screen.LoginScreenRoute.route) {
                             popUpTo(Screen.SplashRoute.route) { inclusive = true }
                         }
                     }
@@ -126,8 +126,6 @@ fun MyAppNavigator(
                 )
             }
 
-
-
             composable(Screen.SettingScreenRoute.route) {
                 SettingScreen(
                     onBack = {
@@ -137,15 +135,24 @@ fun MyAppNavigator(
             }
 
             composable(Screen.MainScreenRoute.route) {
+
+                val rootNavController = LocalNavController.current // this is your app-wide controller
+                val tabNavController = rememberNavController()     // this is nested controller for tabs
+
                 MainScreen(
-                    homeContent = { TestScreen(title = "Home", onClick = {
-                        navController.navigate(Screen.SettingScreenRoute.route)
-                    }) },       // from Home feature
-                    cartContent = { TestScreen("Cart") },       // from Cart feature
-                    ordersContent = { TestScreen("Orders") },   // from Orders feature
-                    profileContent = { TestScreen("Profile") }  // from Profile feature
+                    tabNavController = tabNavController,
+                    homeContent = {
+                        TestScreen(title = "Home", onClick = {
+                            // Navigate with ROOT controller to a global screen:
+                            rootNavController.navigate(Screen.SettingScreenRoute.route)
+                        })
+                    },
+                    cartContent = { TestScreen("Cart") },
+                    ordersContent = { TestScreen("Orders") },
+                    profileContent = { TestScreen("Profile") },
                 )
             }
+
 
 
             /*            composable(
