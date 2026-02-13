@@ -134,6 +134,8 @@ dependencies {
     // Data: Room (KSP)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    // For paging support
+    implementation(libs.androidx.room.paging)
     ksp(libs.androidx.room.compiler)
 
     // Network
@@ -141,6 +143,9 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.retrofit)
     implementation(libs.converter.gson) // or swap to kotlinx-serialization converter
+
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)
@@ -160,7 +165,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     // Compose UI tests (no version thanks to BOM)
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
     // Debug test tooling
     debugImplementation("androidx.compose.ui:ui-test-manifest")

@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.bashar.avalag.src.core.navigation.MyAppNavigator
@@ -23,14 +24,15 @@ import com.bashar.avalag.src.core.navigation.currentRoute
 import com.bashar.avalag.src.core.ui.theme.AvalagTheme
 import com.bashar.avalag.src.features.setting.domain.models.ThemeMode
 import com.bashar.avalag.src.features.setting.presentation.screens.SettingsViewModel
+import com.bashar.avalag.R
 
 
 @Composable
 fun MyApp(vm: SettingsViewModel = hiltViewModel(), content: @Composable () -> Unit = {}) {
 
     val navController = rememberNavController()
-    val navigatorBottomNavigation = rememberNavController()
 
+    val textMessage = stringResource(R.string.press_back_again_to_exit)
 
     val lastBackPressTime = remember { mutableStateOf(0L) }
     val context = LocalContext.current
@@ -56,7 +58,7 @@ fun MyApp(vm: SettingsViewModel = hiltViewModel(), content: @Composable () -> Un
             color = MaterialTheme.colorScheme.background
         ) {
             Column {
-                MyAppNavigator(navController, navigatorBottomNavigation,)
+                MyAppNavigator(navController,)
                 Surface {
 //                    val systemUiController: SystemUiControll = rememberSystemUiController()
 //                    systemUiController.isStatusBarVisible =
@@ -76,7 +78,7 @@ fun MyApp(vm: SettingsViewModel = hiltViewModel(), content: @Composable () -> Un
                         } else {
                             // Update the time of the last back press and show a message to the user
                             lastBackPressTime.value = currentTime
-                            Toast.makeText(context, "Press again to exit", Toast.LENGTH_SHORT)
+                            Toast.makeText(context, textMessage, Toast.LENGTH_SHORT)
                                 .show()
                         }
                     }

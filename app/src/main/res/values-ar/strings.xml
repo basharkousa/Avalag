@@ -1,49 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Avalag</string>
     <string name="template_screen">شاشة القالب</string>
     <string name="best_choice_to_start_your_app">أفضل خيار لبناء تطبيقك</string>
+
     <string name="settings">الإعدادات</string>
     <string name="notifications">الإشعارات</string>
     <string name="main_screen">الصفحة الرئيسية</string>
     <string name="notifications_setting">إعدادات الإشعارات</string>
     <string name="manage_your_notifications_preferences">قم بإدارة تفضيلات الإشعارات هنا</string>
+
     <string name="preferences">التفضيلات</string>
     <string name="security">الأمان</string>
     <string name="change_password">تغيير كلمة المرور</string>
-    <string name="biometric_authentications">المصادقات البيومترية</string>
+    <string name="biometric_authentications">المصادقة البيومترية</string>
     <string name="privacy_policy">سياسة الخصوصية</string>
     <string name="change_language">تغيير اللغة</string>
+
     <string name="system_default">الإعداد الافتراضي للنظام</string>
-    <string name="theme_mode">وضع السمة</string>
+    <string name="theme_mode">وضع المظهر</string>
     <string name="system">النظام</string>
     <string name="light">فاتح</string>
     <string name="dark">داكن</string>
+
     <string name="close">إغلاق</string>
+
     <string name="onboarding_title_1">ابدأ بأسلوب ذكي</string>
     <string name="onboarding_subtitle_1">قم بضبط تفضيلاتك في الأزياء لتجربة مخصصة مدعومة بالذكاء الاصطناعي.</string>
+
     <string name="home">الرئيسية</string>
     <string name="cart">السلة</string>
     <string name="orders">الطلبات</string>
-    <string name="profile">الشخصية</string>
+    <string name="profile">الملف الشخصي</string>
+
     <string name="login">تسجيل الدخول</string>
-    <string name="login_title">أدخل رقم الهاتف المسجل لدى التطبيق</string>
+    <string name="login_title">أدخل رقم الهاتف المسجل في التطبيق</string>
     <string name="password">كلمة المرور</string>
     <string name="phone_number">رقم الهاتف</string>
     <string name="code">الرمز</string>
+
     <string name="create_new_account">إنشاء حساب جديد</string>
     <string name="forgot_password">نسيت كلمة المرور؟</string>
     <string name="next">التالي</string>
     <string name="or">أو</string>
-    <string name="continue_with_google">متابعة ب Google</string>
-    <string name="log_in_using_facebook">متابعة ب Facebook</string>
-    <string name="continue_with_email">تسجيل بواسطة الإيميل</string>
+
+    <string name="continue_with_google">المتابعة باستخدام Google</string>
+    <string name="log_in_using_facebook">المتابعة باستخدام Facebook</string>
+    <string name="continue_with_email">المتابعة باستخدام البريد الإلكتروني</string>
+
     <string name="skip">تخطي</string>
-    <string name="sign_up">Sign Up</string>
-    <string name="please_enter_your_phone_number">Please enter your phone number</string>
-    <string name="activation_code">Activation Code</string>
-    <string name="please_enter_the_code_we_sent_to_number">Please enter the 6-digit code we sent to your phone number +9634234234234</string>
-    <string name="new_password">New Password</string>
-    <string name="save">Save</string>
-    <string name="forgot_password_title">Forget Password</string>
+    <string name="sign_up">إنشاء حساب</string>
+
+    <string name="please_enter_your_phone_number">يرجى إدخال رقم هاتفك</string>
+    <string name="activation_code">رمز التفعيل</string>
+    <string name="please_enter_the_code_we_sent_to_number">يرجى إدخال الرمز المكوّن من 6 أرقام الذي أرسلناه إلى رقم هاتفك</string>
+
+    <string name="new_password">كلمة مرور جديدة</string>
+    <string name="save">حفظ</string>
+    <string name="forgot_password_title">استعادة كلمة المرور</string>
+
+    <string name="retry">إعادة المحاولة</string>
+    <string name="no_items">لا توجد عناصر</string>
+    <string name="press_back_again_to_exit">اضغط مرة أخرى للخروج</string>
+
 </resources>

@@ -1,8 +1,24 @@
 package com.bashar.avalag.src.core.data.remote.api
 
-interface AppApi {
-}
+import retrofit2.Response
+import retrofit2.http.GET
 
+interface AppApi {
+
+    /**
+     * Keep this interface as the "root" API.
+     * Later you can:
+     *  - put all endpoints here
+     *  - OR split into multiple interfaces (AuthApi, ProductApi, OrderApi...)
+     *    and provide them via Retrofit as well.
+     */
+
+    // Example safe endpoint (not required to exist; keep as template):
+    // @GET("health")
+    // suspend fun health(): Response<Unit>
+
+    // For now, leave empty until you start integrating features.
+}
 
 /*
 interface LastFmApi{
