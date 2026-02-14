@@ -168,7 +168,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
     // Debug test tooling
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
 
 // Room schema location for KSP (keeps JSON schemas under projectDir/schemas)
