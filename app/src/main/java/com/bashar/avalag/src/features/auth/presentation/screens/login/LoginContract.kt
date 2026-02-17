@@ -1,7 +1,6 @@
 package com.bashar.avalag.src.features.auth.presentation.screens.login
 
 import androidx.compose.runtime.Immutable
-import com.bashar.avalag.src.core.utils.TemplateEvents
 
 @Immutable
 data class LoginState(

@@ -27,9 +27,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bashar.avalag.R
 import com.bashar.avalag.src.core.ui.theme.Primary100
 import com.bashar.avalag.src.core.ui.widgets.DefaultButton
-import com.bashar.avalag.src.core.utils.TemplateEvents
-import com.bashar.avalag.src.core.utils.TemplateState
-import com.bashar.avalag.src.core.utils.ViewModelTemplate
+import com.bashar.avalag.src.core.utils.DemoEvents
+import com.bashar.avalag.src.core.utils.DemoState
+import com.bashar.avalag.src.core.utils.DemoViewModel
 import com.bashar.avalag.src.features.auth.presentation.widgets.AuthTppBar
 import com.bashar.avalag.src.features.auth.presentation.widgets.OtpField
 
@@ -38,7 +38,7 @@ import com.bashar.avalag.src.features.auth.presentation.widgets.OtpField
 fun OtpScreen(
     onNext: () -> Unit,
     onBack: () -> Unit,
-    viewModel: ViewModelTemplate = hiltViewModel()
+    viewModel: DemoViewModel = hiltViewModel()
 ) {
     val state by viewModel.state
 
@@ -46,8 +46,8 @@ fun OtpScreen(
         state = state,
         onEvent = { event ->
             when (event) {
-                is TemplateEvents.OnBackPress -> onBack()
-                TemplateEvents.OnNavigateToScreen -> onNext()
+                is DemoEvents.OnBackPress -> onBack()
+                DemoEvents.OnNavigateToScreen -> onNext()
             }
         }
     )
@@ -57,8 +57,8 @@ fun OtpScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun ScreenContent(
-    state: TemplateState = TemplateState(),
-    onEvent: (TemplateEvents) -> Unit = {}
+    state: DemoState = DemoState(),
+    onEvent: (DemoEvents) -> Unit = {}
 ) {
 
     var otp by remember { mutableStateOf("") }
@@ -67,7 +67,7 @@ private fun ScreenContent(
     Scaffold(
         topBar = {
             AuthTppBar(stringResource = R.string.activation_code, onBack = {
-                onEvent(TemplateEvents.OnBackPress)
+                onEvent(DemoEvents.OnBackPress)
             },)
         }
     ) { padding ->
@@ -115,7 +115,7 @@ private fun ScreenContent(
                 // Primary button
                 DefaultButton(
                     text = stringResource(R.string.next),
-                    onClick = { onEvent(TemplateEvents.OnNavigateToScreen) }
+                    onClick = { onEvent(DemoEvents.OnNavigateToScreen) }
                 )
                 Spacer(Modifier.height(24.dp))
             }

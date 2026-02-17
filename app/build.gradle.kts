@@ -20,6 +20,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        buildConfigField("String", "BASE_URL", "\"https://adverwize.smarttarget.qa/api/v1/\"")
+
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Room schema export (handy for migrations)
@@ -161,6 +164,10 @@ dependencies {
 
     // ---- Tests ----
     testImplementation(libs.junit)
+
+    //For ViewModel
+    testImplementation(libs.kotlinx.coroutines.test)
+
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -63,5 +63,20 @@
     <string name="retry">إعادة المحاولة</string>
     <string name="no_items">لا توجد عناصر</string>
     <string name="press_back_again_to_exit">اضغط مرة أخرى للخروج</string>
+    <string name="update_required">تحديث مطلوب</string>
+    <string name="update_required_message">يتطلب الاستمرار في استخدام التطبيق تحديثه إلى أحدث إصدار.</string>
+    <string name="update">تحديث</string>
+    <string name="exit">خروج</string>
+    <string name="error_check_version">تعذر التحقق من إصدار التطبيق. يرجى المحاولة مرة أخرى.</string>
+
+    <string name="error_no_internet">لا يوجد اتصال بالإنترنت.</string>
+    <string name="error_timeout">انتهت مهلة الاتصال. يرجى المحاولة مرة أخرى.</string>
+    <string name="error_network_generic">حدث خطأ في الشبكة. يرجى المحاولة مرة أخرى.</string>
+    <string name="error_unauthorized">انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.</string>
+    <string name="error_not_found">الخدمة غير متوفرة.</string>
+    <string name="error_server">حدث خطأ في الخادم. يرجى المحاولة لاحقًا.</string>
+    <string name="error_unknown">حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.</string>
+
+
 
 </resources>

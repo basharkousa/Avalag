@@ -11,20 +11,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewModelTemplate @Inject constructor(
+class DemoViewModel @Inject constructor(
 //    private val repository: Repository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private var _state by mutableStateOf(
-        TemplateState(
+        DemoState(
             name = ""
         )
     )
-    val state: State<TemplateState>
+    val state: State<DemoState>
         get() = derivedStateOf { _state }
 
-    fun onEvent(event: TemplateEvents) {
+    fun onEvent(event: DemoEvents) {
 //        when (event) {
 //            TemplateEvents.NavigateToMainScreen -> {
 //                // Navigation handled by the screen

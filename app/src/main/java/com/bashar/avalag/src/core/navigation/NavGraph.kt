@@ -1,5 +1,8 @@
 package com.bashar.avalag.src.core.navigation
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -38,11 +41,22 @@ fun MyAppNavigator(
 
             composable(Screen.SplashRoute.route) {
                 SplashScreen(
-                    onNavigateToScreen = {
-                        navController.navigate(Screen.LoginScreenRoute.route) {
-                            popUpTo(Screen.SplashRoute.route) { inclusive = true }
-                        }
-                    }
+                  onNavigateToAuth = {
+                      navController.navigate(Screen.LoginScreenRoute.route) {
+                          popUpTo(Screen.SplashRoute.route) { inclusive = true }
+                      }
+                  },
+                  onNavigateToMain = {
+                      navController.navigate(Screen.MainScreenRoute.route) {
+                          popUpTo(Screen.SplashRoute.route) { inclusive = true }
+                      }
+                  },
+                  onOpenUpdateLink = { link ->
+                     navController.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+                  },
+                  onExitApp = {
+                      ((navController.context) as? Activity)?.finish()
+                  }
                 )
             }
             composable(Screen.LoginScreenRoute.route) {
