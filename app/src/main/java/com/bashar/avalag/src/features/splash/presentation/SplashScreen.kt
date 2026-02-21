@@ -143,6 +143,7 @@ internal fun ScreenContent(
         SplashBody(padding = padding, isLoading = state.isLoading)
 
         // Mandatory update dialog
+        //todo Add ForceUpdateDialog
         state.updateDialog?.let { dialog ->
             AlertDialog(
                 modifier = Modifier.testTag(SplashTestTags.UPDATE_DIALOG),

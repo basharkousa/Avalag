@@ -10,6 +10,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [DevDebug, ProdDebug]
+        flavorDir: [dev, prod]
+        include:
+          - variant: DevDebug
+            flavorDir: dev
+          - variant: ProdDebug
+            flavorDir: prod
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,18 +34,18 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace
+      - name: Build APK
+        run: ./gradlew :app:assemble${{ matrix.variant }} --stacktrace
 
       - name: Unit tests
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew :app:test${{ matrix.variant }}UnitTest
 
       - name: Lint
-        run: ./gradlew lintDebug
+        run: ./gradlew :app:lint${{ matrix.variant }}
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Avalag-${{ github.ref_name }}-debug
-          path: app/build/outputs/apk/debug/*.apk
+          name: Avalag-${{ github.ref_name }}-${{ matrix.flavorDir }}-debug
+          path: app/build/outputs/apk/${{ matrix.flavorDir }}/debug/*.apk
           if-no-files-found: error

@@ -3,6 +3,7 @@ package com.bashar.avalag.src.core.di.hilt.moduls
 
 import com.bashar.avalag.BuildConfig
 import com.bashar.avalag.src.core.data.remote.api.AppApi
+import com.bashar.avalag.src.core.data.remote.interceptors.NetworkErrorLoggingInterceptor
 import com.bashar.avalag.src.core.data.remote.interceptors.PrettyHttpLogger
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -69,8 +70,8 @@ object RemoteModule {
     ): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(headers)
-//            .addInterceptor(NetworkErrorLoggingInterceptor())
-            .addInterceptor(PrettyHttpLogger(tag = "NET"))
+            .addInterceptor(NetworkErrorLoggingInterceptor())
+            .addInterceptor(PrettyHttpLogger(tag = "NETWORK"))
             .addInterceptor(logging)
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
@@ -84,7 +85,7 @@ object RemoteModule {
         gson: Gson,
     ): Retrofit =
         Retrofit.Builder()
-//            .baseUrl(Constants.BASE_URL)
+//            .baseUrl("https://adverwize.smarttarget.qa/")
             .baseUrl(BuildConfig.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(gson))

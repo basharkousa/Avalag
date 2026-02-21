@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bashar.avalag.BuildConfig
 import com.bashar.avalag.src.core.data.remote.errors.NetworkErrorMapper
 import com.bashar.avalag.src.features.appversion.domain.model.UpdateStatus
 import com.bashar.avalag.src.features.appversion.domain.usecase.GetAppVersionInfoUseCase
@@ -40,8 +41,8 @@ class SplashViewModel @Inject constructor(
             _state = SplashState(isLoading = true)
 
             val platform = "android"
-//            val version = BuildConfig.VERSION_NAME // e.g. "1.1.0"
-            val version = "2.0.0" // e.g. "1.1.0"
+            val version = BuildConfig.VERSION_NAME // e.g. "1.1.0"
+//            val version = "2.0.0" // e.g. "1.1.0"
 
             val result = runCatching { getAppVersionInfo(platform, version) }
 

@@ -13,7 +13,7 @@ import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
 class PrettyHttpLogger(
-    private val tag: String = "NET",
+    private val tag: String = "NETWORK",
     private val maxBodyChars: Int = 200_000, // avoid huge logs
     private val redactHeaders: Set<String> = setOf("Authorization", "Cookie", "Set-Cookie")
 ) : Interceptor {
@@ -27,7 +27,7 @@ class PrettyHttpLogger(
         val response = try {
             chain.proceed(request)
         } catch (t: Throwable) {
-            Log.e(tag, "❌ HTTP FAILED: ${t.message}", t)
+            Log.e(tag, "❌ HTTP FAILED: ${t.message} \n ", t)
             throw t
         }
 

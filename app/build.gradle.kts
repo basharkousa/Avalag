@@ -20,7 +20,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField("String", "BASE_URL", "\"https://adverwize.smarttarget.qa/api/v1/\"")
+//        buildConfigField("String", "BASE_URL", "\"https://adverwize.smarttarget.qa/api/v1/\"")
 
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -39,6 +39,28 @@ android {
             storePassword = System.getenv("SIGNING_STORE_PASSWORD")
             keyAlias = System.getenv("SIGNING_KEY_ALIAS")
             keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+        }
+    }
+
+
+    flavorDimensions += "env"
+
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+
+            // Optional but very useful for debugging installs:
+            resValue("string", "app_name", "Avalag Dev")
+
+            buildConfigField("String", "BASE_URL", "\"https://adverwize.smarttarget.qa/api/v1/\"")
+        }
+
+        create("prod") {
+            dimension = "env"
+            // keep original app id + name
+            buildConfigField("String", "BASE_URL", "\"https://adverwize.smarttarget.qa/api/v1/\"")
         }
     }
 
