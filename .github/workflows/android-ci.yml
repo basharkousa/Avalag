@@ -23,6 +23,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Compute safe artifact ref
+        shell: bash
+        run: |
+          REF="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          SAFE_REF="${REF//\//-}"
+          echo "SAFE_REF=$SAFE_REF" >> $GITHUB_ENV
+
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
@@ -41,9 +48,13 @@ jobs:
       - name: Lint
         run: ./gradlew :app:lint${{ matrix.variant }}
 
+      # Optional debug step (remove later if you want)
+      - name: List APK outputs
+        run: ls -R app/build/outputs/apk || true
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Avalag-${{ github.ref_name && replace(github.ref_name, '/', '-') }}-${{ matrix.flavorDir }}-debug
+          name: Avalag-${{ env.SAFE_REF }}-${{ matrix.flavorDir }}-debug
           path: app/build/outputs/apk/${{ matrix.flavorDir }}/debug/*.apk
           if-no-files-found: error
