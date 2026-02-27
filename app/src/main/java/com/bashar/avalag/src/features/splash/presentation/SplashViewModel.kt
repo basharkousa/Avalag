@@ -12,6 +12,8 @@ import com.bashar.avalag.BuildConfig
 import com.bashar.avalag.src.core.data.remote.errors.NetworkErrorMapper
 import com.bashar.avalag.src.features.appversion.domain.model.UpdateStatus
 import com.bashar.avalag.src.features.appversion.domain.usecase.GetAppVersionInfoUseCase
+import com.bashar.avalag.src.features.basics.domain.usecases.GetBasicsInfoUseCase
+import com.bashar.avalag.src.features.basics.domain.usecases.GetEnumsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +22,8 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getAppVersionInfo: GetAppVersionInfoUseCase,
+    private val getBasicsInfo: GetBasicsInfoUseCase? = null,//todo
+    private val getEnums: GetEnumsUseCase? = null//todo
 ) : ViewModel() {
 
     private var _state by mutableStateOf(SplashState())
