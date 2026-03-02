@@ -15,6 +15,8 @@ import com.bashar.avalag.src.features.appversion.domain.usecase.GetAppVersionInf
 import com.bashar.avalag.src.features.basics.domain.usecases.GetBasicsInfoUseCase
 import com.bashar.avalag.src.features.basics.domain.usecases.GetEnumsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,41 +24,40 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getAppVersionInfo: GetAppVersionInfoUseCase,
-    private val getBasicsInfo: GetBasicsInfoUseCase? = null,//todo
-    private val getEnums: GetEnumsUseCase? = null//todo
+    private val getBasicsInfo: GetBasicsInfoUseCase,
+    private val getEnums: GetEnumsUseCase
 ) : ViewModel() {
 
     private var _state by mutableStateOf(SplashState())
     val state: State<SplashState> get() = derivedStateOf { _state }
 
     init {
-        checkVersion()
+        checkVersionAndBootstrap()
     }
 
     fun onEvent(event: SplashEvents) {
         when (event) {
-            SplashEvents.Retry -> checkVersion()
+            SplashEvents.Retry -> checkVersionAndBootstrap()
             SplashEvents.ConsumeSnackbar -> _state = _state.copy(snackbarMessage = null)
         }
     }
 
-    private fun checkVersion() {
+    private fun checkVersionAndBootstrap() {
         viewModelScope.launch {
             _state = SplashState(isLoading = true)
 
             val platform = "android"
-            val version = BuildConfig.VERSION_NAME // e.g. "1.1.0"
-//            val version = "2.0.0" // e.g. "1.1.0"
+//            val version = BuildConfig.VERSION_NAME
+              val version = "2.0.0" // e.g. "1.1.0"
 
-            val result = runCatching { getAppVersionInfo(platform, version) }
+            val versionResult = runCatching { getAppVersionInfo(platform, version) }
+            val info = versionResult.getOrNull()
+            val versionError = versionResult.exceptionOrNull()
 
-            val info = result.getOrNull()
-            val error = result.exceptionOrNull()
-
-            if (error != null) {
+            if (versionError != null) {
                 _state = SplashState(
                     isLoading = false,
-                    snackbarMessage = NetworkErrorMapper.toUiText(error),
+                    snackbarMessage = NetworkErrorMapper.toUiText(versionError),
                     navigateTo = null
                 )
                 return@launch
@@ -72,6 +73,27 @@ class SplashViewModel @Inject constructor(
                 }
 
                 UpdateStatus.UP_TO_DATE -> {
+                    // Bootstrap preload (enums + basics). Fail => stay on splash with snackbar.
+                    val bootstrapError = runCatching {
+                        coroutineScope {
+                            val enumsDeferred = async { getEnums() }
+                            val basicsDeferred = async { getBasicsInfo() }
+
+                            // We don't use the values yet, but forcing completion ensures they loaded.
+                            enumsDeferred.await()
+                            basicsDeferred.await()
+                        }
+                    }.exceptionOrNull()
+
+                    if (bootstrapError != null) {
+                        _state = SplashState(
+                            isLoading = false,
+                            snackbarMessage = NetworkErrorMapper.toUiText(bootstrapError),
+                            navigateTo = null
+                        )
+                        return@launch
+                    }
+
                     // --- AUTH decision (stub now, real later) ---
                     val isLoggedIn = false // TODO: replace with token/session check
                     _state = SplashState(

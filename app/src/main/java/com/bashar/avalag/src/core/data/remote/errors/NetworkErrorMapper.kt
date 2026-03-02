@@ -28,4 +28,5 @@ object NetworkErrorMapper {
             else -> UiText.StringResource(R.string.error_unknown)
         }
     }
+
 }

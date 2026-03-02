@@ -7,7 +7,7 @@ import timber.log.Timber
 class NetworkErrorLoggingInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        Timber.tag("API").d("--> ${request.method} ${request.url}")
+        Timber.tag("API_REQUEST").d("--> ${request.method} ${request.url}")
 
         val response = chain.proceed(request)
         val peek = response.peekBody(Long.MAX_VALUE).string() // safe, does not consume original

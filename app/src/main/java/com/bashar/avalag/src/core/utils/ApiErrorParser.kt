@@ -1,6 +1,5 @@
 package com.bashar.avalag.src.core.utils
 
-import android.util.Log
 import org.json.JSONObject
 import retrofit2.HttpException
 import timber.log.Timber
