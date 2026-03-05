@@ -1,14 +1,14 @@
 package com.bashar.avalag.src.features.auth.presentation.screens.forgotreset
 
 import androidx.lifecycle.ViewModel
-import com.bashar.avalag.src.features.auth.domain.repositories.AuthRepository
+import com.bashar.avalag.src.features.auth.domain.repositories.IAuthRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 
 class ResetViewModel(
-    private val repo: AuthRepository,
+    private val repo: IAuthRepo,
 ) : ViewModel() {
 
 

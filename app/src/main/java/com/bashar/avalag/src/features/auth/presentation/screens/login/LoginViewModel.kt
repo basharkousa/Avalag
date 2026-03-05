@@ -1,7 +1,6 @@
 package com.bashar.avalag.src.features.auth.presentation.screens.login
 
 import androidx.lifecycle.ViewModel
-import com.bashar.avalag.src.features.auth.domain.repositories.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
