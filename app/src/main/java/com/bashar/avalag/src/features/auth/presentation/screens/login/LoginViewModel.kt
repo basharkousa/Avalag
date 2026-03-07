@@ -1,51 +1,83 @@
 package com.bashar.avalag.src.features.auth.presentation.screens.login
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.bashar.avalag.src.core.data.remote.errors.NetworkErrorMapper
+import com.bashar.avalag.src.features.auth.domain.usecases.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-//    private val repo: AuthRepository,
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
+    private var _state by mutableStateOf(LoginState())
+    val state: State<LoginState> get() = derivedStateOf { _state }
 
-    private val _state = MutableStateFlow(LoginState())
-    val state: StateFlow<LoginState> = _state.asStateFlow()
+    fun onEvent(event: LoginEvents) {
+        when (event) {
 
+            is LoginEvents.UsernameChanged -> {
+                _state = _state.copy(username = event.value)
+            }
 
-    fun onEvent(event: LoginEvent) {
-//        when (event) {
-//            is LoginEvent.EmailChanged -> _state.value = _state.value.copy(email = event.value)
-//            is LoginEvent.PasswordChanged -> _state.value = _state.value.copy(password = event.value)
-//            LoginEvent.TogglePasswordVisibility -> _state.value = _state.value.copy(
-//                isPasswordVisible = !_state.value.isPasswordVisible
-//            )
-//            LoginEvent.Submit -> submit()
-//            LoginEvent.ClearError -> _state.value = _state.value.copy(errorMessage = null)
-//        }
+            is LoginEvents.PasswordChanged -> {
+                _state = _state.copy(password = event.value)
+            }
+
+            LoginEvents.LoginClicked -> login()
+
+            LoginEvents.ConsumeSnackbar -> {
+                _state = _state.copy(snackbarMessage = null)
+            }
+        }
     }
 
+    private fun login() {
 
-    private fun submit() {
-        val s = _state.value
-        if (!s.canSubmit) return
-      /*  viewModelScope.launch {
-            _state.value = s.copy(isLoading = true, errorMessage = null)
-            val result = repo.login(s.email.trim(), s.password)
-            result.onSuccess { token ->
-                _effects.send(LoginEffect.NavigateHome(token))
-            }.onFailure { th ->
-                _state.value = _state.value.copy(
-                    isLoading = false,
-                    errorMessage = th.message ?: "unknown_error"
+//        val username = _state.username
+//        val password = _state.password
+//        val key = _state.key
+//
+        val username = "23156544"
+        val password = "secret"
+        val key = "+963"
+
+        viewModelScope.launch {
+
+            _state = _state.copy(isLoading = true)
+
+            val result = runCatching {
+                loginUseCase(
+                    username = username,
+                    key = key,
+                    password = password,
+                    fcm = "11111111111111111111111111"
                 )
             }
-// if success, keep loading until collector navigates away; otherwise we reset above
-        }*/
+
+            val session = result.getOrNull()
+            val error = result.exceptionOrNull()
+
+            if (error != null) {
+                _state = _state.copy(
+                    isLoading = false,
+                    snackbarMessage = NetworkErrorMapper.toUiText(error)
+                )
+                return@launch
+            }
+
+            _state = _state.copy(
+                isLoading = false,
+                navigateTo = LoginDestination.MAIN
+            )
+        }
     }
 }

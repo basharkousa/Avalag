@@ -181,6 +181,8 @@ dependencies {
     // multidex (for large app sizes 64k...)
     implementation (libs.androidx.multidex)
 
+    implementation(libs.libphonenumber)
+
 //     Misc
     implementation(libs.timber)
 

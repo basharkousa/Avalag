@@ -64,20 +64,26 @@ fun MyAppNavigator(
                     onBack = {
                         navController.navigateUp()
                     },
-                    onNext = {
-                        navController.navigate(Screen.OtpRouteRoute.route)
-                    },
+//                    onNext = {
+//                        navController.navigate(Screen.OtpRouteRoute.route)
+//                    },
                     onSkip = {
                         navController.navigate(Screen.MainScreenRoute.route){
 //                            popUpTo(Screen.LoginScreenRoute.route) { inclusive = true }
                         }
                     },
-                    onForgotPassword = {
+                    onNavigateToResetPassword = {
                         navController.navigate(Screen.ForgotRoute.route)
                     },
-                    onSignUp = {
-                        navController.navigate(Screen.SignUpRouteRoute.route)
+                    onNavigateToMain = {
+                        navController.navigate(Screen.MainScreenRoute.route) {
+                            popUpTo(Screen.SplashRoute.route) { inclusive = true }
+                        }
                     },
+
+                    onNavigateToSignup = {
+                        navController.navigate(Screen.SignUpRouteRoute.route)
+                    }
 
                 )
             }

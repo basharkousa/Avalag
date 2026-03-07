@@ -12,6 +12,7 @@ interface AuthApi {
     @Multipart
     @POST("login")
     suspend fun login(
+        @Part("username_type") usernameType: RequestBody,
         @Part("username") username: RequestBody,
         @Part("key") key: RequestBody,
         @Part("password") password: RequestBody,

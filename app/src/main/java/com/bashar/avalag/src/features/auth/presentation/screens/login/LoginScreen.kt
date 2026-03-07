@@ -18,30 +18,36 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bashar.avalag.R
-import com.bashar.avalag.src.core.ui.theme.AvalagTheme
 import com.bashar.avalag.src.core.ui.theme.Primary100
 import com.bashar.avalag.src.core.ui.widgets.DefaultButton
 import com.bashar.avalag.src.core.ui.widgets.DefaultTextField
-import com.bashar.avalag.src.core.ui.widgets.defaultCountries
 import com.bashar.avalag.src.core.utils.AvalagMultiPreview
-import com.bashar.avalag.src.core.utils.AvalagPreview
+import com.bashar.avalag.src.core.utils.ScreenTemplate
+import com.bashar.avalag.src.core.utils.UiText
+import com.bashar.avalag.src.core.utils.asString
+import com.bashar.avalag.src.features.auth.presentation.screens.login.test.LoginTestTags
 
 import com.bashar.avalag.src.features.auth.presentation.widgets.AuthTppBar
 import com.bashar.avalag.src.features.auth.presentation.widgets.OrDivider
@@ -49,66 +55,128 @@ import com.bashar.avalag.src.features.auth.presentation.widgets.OrDivider
 
 @Composable
 fun LoginScreen(
-    onForgotPassword: () -> Unit,
-    onSignUp: () -> Unit,
-    onNext: () -> Unit,
-    onSkip: () -> Unit,
+    onNavigateToMain: () -> Unit,
+    onNavigateToSignup: () -> Unit,
+    onNavigateToResetPassword: () -> Unit,
     onBack: () -> Unit,
-    viewModel: LoginViewModel = hiltViewModel()
+    onSkip: () -> Unit,
+    vm: LoginViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by vm.state
 
     ScreenContent(
         state = state,
         onEvent = { event ->
             when (event) {
-                is LoginEvent.OnNavigateToForgotScreen -> onForgotPassword()
-                LoginEvent.OnNavigateToSignUpScreen -> onSignUp()
-//                else -> viewModel.onEvent(event)
-                LoginEvent.OnBackPress -> onBack()
-                is LoginEvent.OnNavigateToOtpScreen -> onNext()
+                is LoginUiEvent.UsernameChanged ->
+                    vm.onEvent(LoginEvents.UsernameChanged(event.value))
 
-                is LoginEvent.EmailChanged -> TODO()
-                is LoginEvent.NavigateHome -> TODO()
-                is LoginEvent.OnNavigateToSignUpScreen -> TODO()
-                is LoginEvent.PasswordChanged -> TODO()
-                LoginEvent.Submit -> TODO()
-                LoginEvent.TogglePasswordVisibility -> TODO()
-                LoginEvent.ClearError -> TODO()
-                LoginEvent.OnSkip -> onSkip()
+                is LoginUiEvent.PasswordChanged ->
+                    vm.onEvent(LoginEvents.PasswordChanged(event.value))
+
+                LoginUiEvent.LoginClicked ->
+                    vm.onEvent(LoginEvents.LoginClicked)
+
+                LoginUiEvent.ConsumeSnackbar ->
+                    vm.onEvent(LoginEvents.ConsumeSnackbar)
+
+                LoginUiEvent.BackClicked -> onBack()
+
+                LoginUiEvent.SkipClicked -> onSkip()
+
+                is LoginUiEvent.Navigate -> {
+                    when (event.to) {
+                        LoginDestination.MAIN -> onNavigateToMain()
+                        LoginDestination.SIGNUP -> onNavigateToSignup()
+                        LoginDestination.RESET_PASSWORD -> onNavigateToResetPassword()
+                        LoginDestination.BACK -> onBack()
+                        LoginDestination.SKIP -> onSkip()
+                    }
+                }
             }
         }
     )
 }
 
+
+@Composable
+internal fun ScreenContent(
+    state: LoginState = LoginState(),
+    onEvent: (LoginUiEvent) -> Unit = {},
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
+    LaunchedEffect(state.navigateTo) {
+        state.navigateTo?.let { onEvent(LoginUiEvent.Navigate(it)) }
+    }
+
+    LaunchedEffect(state.snackbarMessage) {
+        val uiText = state.snackbarMessage ?: return@LaunchedEffect
+        val msg = uiText.asString(context)
+        val retryLabel = UiText.StringResource(R.string.retry).asString(context)
+
+        val result = snackbarHostState.showSnackbar(
+            message = msg,
+            actionLabel = retryLabel,
+            duration = SnackbarDuration.Short
+        )
+
+        onEvent(LoginUiEvent.ConsumeSnackbar)
+
+        if (result == SnackbarResult.ActionPerformed) {
+            onEvent(LoginUiEvent.LoginClicked)
+        }
+    }
+
+    ScreenTemplate(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { data ->
+                Snackbar(
+                    action = {
+                        val label = data.visuals.actionLabel
+                        if (!label.isNullOrBlank()) {
+                            TextButton(
+                                modifier = Modifier.testTag(LoginTestTags.SNACKBAR_RETRY),
+                                onClick = { data.performAction() }
+                            ) {
+                                Text(label, color = MaterialTheme.colorScheme.onPrimary)
+                            }
+                        }
+                    }
+                ) {
+                    Text(data.visuals.message)
+                }
+            }
+        },
+    ) { padding ->
+        LoginBody(
+            state = state,
+            onEvent = onEvent
+        )
+    }
+}
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @AvalagMultiPreview
 @Composable
-private fun ScreenContent(
+private fun LoginBody(
     state: LoginState = LoginState(),
-    onEvent: (LoginEvent) -> Unit = {}
+    onEvent: (LoginUiEvent) -> Unit = {},
 ) {
-    // Local preview state only (ignore VM)
-    var countryExpanded by remember { mutableStateOf(false) }
-    var selectedCode by remember { mutableStateOf("+974") }
-    var phone by remember { mutableStateOf("") }
-    var country by remember { mutableStateOf(defaultCountries().first()) }
-
-    var password by remember { mutableStateOf("") }
-
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
 
         Scaffold(
             topBar = {
                 AuthTppBar(stringResource = R.string.login, onBack = {
-                    onEvent(LoginEvent.OnBackPress)
+                    onEvent(LoginUiEvent.BackClicked)
                 }, canSkip = true, onSkip = {
-                    onEvent(LoginEvent.OnSkip)
+                    onEvent(LoginUiEvent.SkipClicked)
                 })
-//            LoginTopBar(
-//                title = "Login",
-//                onBack = { /* TODO hook up */ },
-//                onSkip = { /* TODO hook up */ }
-//            )
             }
         ) { padding ->
             Box(
@@ -134,21 +202,22 @@ private fun ScreenContent(
                     Spacer(Modifier.height(40.dp))
 
                     // Phone row (country + phone)
-                    DefaultTextField(
-                        isPhone = true,
-                        country = country,
-                        onCountryChange = { country = it },
-                        value = phone,
-                        onValueChange = { phone = it },
-                        placeholder = stringResource(R.string.phone_number)
-                    )
+//                    DefaultTextField(
+//                        isPhone = true,
+//                        country = state.key,
+//                        countries = defaultCountries,
+//                        onCountryChange = { country = it },
+//                        value = phone,
+//                        onValueChange = { phone = it },
+//                        placeholder = stringResource(R.string.phone_number)
+//                    )
 
                     Spacer(Modifier.height(12.dp))
 
                     // Password
                     DefaultTextField(
-                        value = password,
-                        onValueChange = { password = it },
+                        value = state.password,
+                        onValueChange = { onEvent(LoginUiEvent.PasswordChanged(it)) },
                         placeholder = stringResource(R.string.password),
                         isPassword = true
                     )
@@ -166,7 +235,7 @@ private fun ScreenContent(
                             textDecoration = TextDecoration.Underline,
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W500),
                             modifier = Modifier.clickable {
-                                onEvent(LoginEvent.OnNavigateToSignUpScreen)
+                                onEvent(LoginUiEvent.Navigate(LoginDestination.SIGNUP))
                             }
                         )
                         Text(
@@ -175,7 +244,7 @@ private fun ScreenContent(
                             textDecoration = TextDecoration.Underline,
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W500),
                             modifier = Modifier.clickable {
-                                onEvent(LoginEvent.OnNavigateToForgotScreen(phone))
+                                onEvent(LoginUiEvent.Navigate(LoginDestination.RESET_PASSWORD))
                             }
                         )
                     }
@@ -185,7 +254,7 @@ private fun ScreenContent(
                     // Primary button
                     DefaultButton(
                         text = stringResource(R.string.next),
-                        onClick = { onEvent(LoginEvent.OnNavigateToOtpScreen(phone)) }
+                        onClick = { onEvent(LoginUiEvent.LoginClicked) }
                     )
 
                     Spacer(Modifier.height(20.dp))
@@ -242,9 +311,8 @@ private fun ScreenContent(
             }
         }
 
-
+    }
 }
-
 
 
 

@@ -1,38 +1,42 @@
 package com.bashar.avalag.src.features.auth.presentation.screens.login
 
-import androidx.compose.runtime.Immutable
+import com.bashar.avalag.src.core.utils.UiText
 
-@Immutable
 data class LoginState(
-    val email: String = "",
+    val username: String = "",
+    val key: String = "+963",
     val password: String = "",
-    val isPasswordVisible: Boolean = false,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null,
-) {
-    val isEmailValid: Boolean get() = EMAIL_REGEX.matches(email.trim())
-    val isPasswordValid: Boolean get() = password.length >= 6
-    val canSubmit: Boolean get() = isEmailValid && isPasswordValid && !isLoading
+    val snackbarMessage: UiText? = null,
+    val navigateTo: LoginDestination? = null
+)
 
+enum class LoginDestination {
+    MAIN,
+    SIGNUP,
+    RESET_PASSWORD,
+    BACK,
+    SKIP,
 
-    companion object {
-        private val EMAIL_REGEX =
-            """^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$""".toRegex(RegexOption.IGNORE_CASE)
-    }
 }
 
+/** UI -> Route */
+sealed interface LoginUiEvent {
+    data class UsernameChanged(val value: String) : LoginUiEvent
+    data class PasswordChanged(val value: String) : LoginUiEvent
 
-sealed interface LoginEvent {
+    data object LoginClicked : LoginUiEvent
+    data object BackClicked : LoginUiEvent
+    data object SkipClicked : LoginUiEvent
 
-    data object OnBackPress : LoginEvent
-    data class OnNavigateToForgotScreen(val value: String,) : LoginEvent
-    data object OnNavigateToSignUpScreen : LoginEvent
-    data class OnNavigateToOtpScreen(val value: String,) : LoginEvent
-     object OnSkip : LoginEvent
-    data class EmailChanged(val value: String,) : LoginEvent
-    data class PasswordChanged(val value: String) : LoginEvent
-    data object TogglePasswordVisibility : LoginEvent
-    data object Submit : LoginEvent
-    data object ClearError : LoginEvent
-    data class NavigateHome(val token: String) : LoginEvent
+    data object ConsumeSnackbar : LoginUiEvent
+    data class Navigate(val to: LoginDestination) : LoginUiEvent
+}
+
+/** Route -> VM */
+sealed interface LoginEvents {
+    data class UsernameChanged(val value: String) : LoginEvents
+    data class PasswordChanged(val value: String) : LoginEvents
+    data object LoginClicked : LoginEvents
+    data object ConsumeSnackbar : LoginEvents
 }
