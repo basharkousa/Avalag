@@ -1,6 +1,5 @@
 package com.bashar.avalag.src.core.ui.widgets
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,10 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -47,25 +43,12 @@ import androidx.compose.ui.unit.dp
 import com.bashar.avalag.R
 import com.bashar.avalag.src.core.ui.theme.Primary100
 
-
-// --- Simple model for the dropdown ---
 data class CountryUi(
-    val code: String,                 // e.g. "+974"
-    val name: String,                 // e.g. "Qatar"
-    @DrawableRes val flagRes: Int     // e.g. R.drawable.flag_qatar
+    val code: String,      // e.g. +963
+    val name: String,      // e.g. Syria
+    val flagEmoji: String, // e.g. 🇸🇾
 )
 
-// Optional default list (replace with your real assets/list)
-fun defaultCountries() = listOf(
-    CountryUi("+974", "Qatar", R.drawable.ic_ring),
-    CountryUi("+971", "United Arab Emirates", R.drawable.ic_ring),
-    CountryUi("+966", "Saudi Arabia", R.drawable.ic_ring)
-)
-
-/**
- * When isPhone = true -> renders Row(country dropdown + number text field)
- * Otherwise -> behaves exactly like your original DefaultTextField.
- */
 @Preview(showBackground = true)
 @Composable
 fun DefaultTextField(
@@ -76,12 +59,10 @@ fun DefaultTextField(
     label: String? = null,
     title: String? = null,
     isPassword: Boolean = false,
-    // NEW: phone mode controls
     isPhone: Boolean = false,
-    country: CountryUi = defaultCountries().first(),
+    country: CountryUi? = null,
     onCountryChange: (CountryUi) -> Unit = {},
-    countries: List<CountryUi> = defaultCountries(),
-
+    countries: List<CountryUi> = emptyList(),
     leadingIcon: (@Composable (() -> Unit))? = null,
     trailingIcon: (@Composable (() -> Unit))? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -94,20 +75,20 @@ fun DefaultTextField(
     ),
     onFocusChange: ((Boolean) -> Unit)? = null,
 ) {
-
-
     Column {
         title?.let {
             Text(
-                title,
+                text = it,
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.W500
                 )
             )
         }
+
         Spacer(modifier = Modifier.height(10.dp))
-        if (isPhone) {
+
+        if (isPhone && country != null) {
             PhoneField(
                 modifier = modifier,
                 number = value,
@@ -122,7 +103,6 @@ fun DefaultTextField(
                 onFocusChange = onFocusChange
             )
         } else {
-            // --- your original text field (unchanged) ---
             var isPasswordVisible by remember { mutableStateOf(false) }
 
             OutlinedTextField(
@@ -138,14 +118,17 @@ fun DefaultTextField(
                 shape = shape,
                 placeholder = {
                     Text(
-                        placeholder,
+                        text = placeholder,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Primary100
                     )
                 },
                 label = label?.let { { Text(it) } },
-                visualTransformation = if (isPassword && !isPasswordVisible)
-                    PasswordVisualTransformation() else VisualTransformation.None,
+                visualTransformation = if (isPassword && !isPasswordVisible) {
+                    PasswordVisualTransformation()
+                } else {
+                    VisualTransformation.None
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = if (isPassword) KeyboardType.Password else keyboardType
                 ),
@@ -155,7 +138,7 @@ fun DefaultTextField(
                         isPassword -> {
                             IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                                 Icon(
-                                    painterResource(
+                                    painter = androidx.compose.ui.res.painterResource(
                                         if (isPasswordVisible) R.drawable.ic_visibility_off
                                         else R.drawable.ic_visibility
                                     ),
@@ -181,8 +164,6 @@ fun DefaultTextField(
     }
 }
 
-/* -------------------- Phone field internals -------------------- */
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PhoneField(
@@ -196,7 +177,7 @@ private fun PhoneField(
     enabled: Boolean,
     shape: Shape,
     textStyle: TextStyle,
-    onFocusChange: ((Boolean) -> Unit)?
+    onFocusChange: ((Boolean) -> Unit)?,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -204,7 +185,6 @@ private fun PhoneField(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Country dropdown
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = it },
@@ -222,12 +202,14 @@ private fun PhoneField(
                 textStyle = textStyle,
                 shape = shape,
                 leadingIcon = {
-                    CountryFlag(flagRes = country.flagRes)
+                    CountryFlag(flagEmoji = country.flagEmoji)
                 },
-                trailingIcon = { Icon(Icons.Default.KeyboardArrowDown, contentDescription = null) },
+                trailingIcon = {
+                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = null)
+                },
                 placeholder = {
                     Text(
-                        stringResource(R.string.code),
+                        text = "Code",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Primary100
                     )
@@ -240,12 +222,16 @@ private fun PhoneField(
                     cursorColor = MaterialTheme.colorScheme.primary,
                 )
             )
-            ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
                 countries.forEach { item ->
                     DropdownMenuItem(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                CountryFlag(flagRes = item.flagRes)
+                                CountryFlag(flagEmoji = item.flagEmoji)
                                 Spacer(Modifier.width(8.dp))
                                 Text("${item.name}  ${item.code}")
                             }
@@ -259,7 +245,6 @@ private fun PhoneField(
             }
         }
 
-        // Phone number field
         OutlinedTextField(
             value = number,
             onValueChange = onNumberChange,
@@ -273,12 +258,14 @@ private fun PhoneField(
             shape = shape,
             placeholder = {
                 Text(
-                    placeholder.ifBlank { "phone number" },
+                    text = placeholder.ifBlank { "Phone number" },
                     style = MaterialTheme.typography.bodyMedium,
                     color = Primary100
                 )
             },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Phone
+            ),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.background,
                 unfocusedContainerColor = MaterialTheme.colorScheme.background,
@@ -291,19 +278,17 @@ private fun PhoneField(
 }
 
 @Composable
-private fun CountryFlag(@DrawableRes flagRes: Int) {
+private fun CountryFlag(flagEmoji: String) {
     Box(
-        Modifier
+        modifier = Modifier
             .size(24.dp)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            painter = painterResource(flagRes),
-            contentDescription = null,
-            modifier = Modifier.size(18.dp),
-            tint = Color.Unspecified // show real colors if your asset is colored
+        Text(
+            text = flagEmoji,
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }

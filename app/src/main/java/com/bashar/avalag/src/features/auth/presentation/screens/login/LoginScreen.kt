@@ -47,6 +47,8 @@ import com.bashar.avalag.src.core.utils.AvalagMultiPreview
 import com.bashar.avalag.src.core.utils.ScreenTemplate
 import com.bashar.avalag.src.core.utils.UiText
 import com.bashar.avalag.src.core.utils.asString
+import com.bashar.avalag.src.features.auth.presentation.mapper.toAuthModel
+import com.bashar.avalag.src.features.auth.presentation.mapper.toWidgetModel
 import com.bashar.avalag.src.features.auth.presentation.screens.login.test.LoginTestTags
 
 import com.bashar.avalag.src.features.auth.presentation.widgets.AuthTppBar
@@ -73,6 +75,10 @@ fun LoginScreen(
 
                 is LoginUiEvent.PasswordChanged ->
                     vm.onEvent(LoginEvents.PasswordChanged(event.value))
+
+                is LoginUiEvent.CountryChanged ->
+                    vm.onEvent(LoginEvents.CountryChanged(event.value))
+
 
                 LoginUiEvent.LoginClicked ->
                     vm.onEvent(LoginEvents.LoginClicked)
@@ -202,15 +208,21 @@ private fun LoginBody(
                     Spacer(Modifier.height(40.dp))
 
                     // Phone row (country + phone)
-//                    DefaultTextField(
-//                        isPhone = true,
-//                        country = state.key,
-//                        countries = defaultCountries,
-//                        onCountryChange = { country = it },
-//                        value = phone,
-//                        onValueChange = { phone = it },
-//                        placeholder = stringResource(R.string.phone_number)
-//                    )
+                    DefaultTextField(
+                        isPhone = true,
+                        country = state.selectedCountry.toWidgetModel(),
+                        countries = state.availableCountries.map { it.toWidgetModel() },
+                        onCountryChange = { selected ->
+                            val authCountry = state.availableCountries.firstOrNull {
+                                it.dialCode == selected.code && it.name == selected.name
+                            } ?: return@DefaultTextField
+
+                            onEvent(LoginUiEvent.CountryChanged(authCountry))
+                        },
+                        value = state.username,
+                        onValueChange = { onEvent(LoginUiEvent.UsernameChanged(it)) },
+                        placeholder = stringResource(R.string.phone_number)
+                    )
 
                     Spacer(Modifier.height(12.dp))
 

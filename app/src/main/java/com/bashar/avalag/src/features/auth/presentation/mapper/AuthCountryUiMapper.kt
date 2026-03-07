@@ -5,16 +5,17 @@ import com.bashar.avalag.src.features.auth.presentation.model.AuthCountryUi
 
 fun AuthCountryUi.toWidgetModel(): CountryUi {
     return CountryUi(
-        code = code,
+        code = dialCode,
         name = name,
-        flagRes = flagRes
+        flagEmoji = flagEmoji
     )
 }
 
-fun CountryUi.toAuthModel(): AuthCountryUi {
+fun CountryUi.toAuthModel(selectedIso2: String? = null): AuthCountryUi {
     return AuthCountryUi(
-        code = code,
+        iso2 = selectedIso2 ?: "",
+        dialCode = code,
         name = name,
-        flagRes = flagRes
+        flagEmoji = flagEmoji
     )
 }

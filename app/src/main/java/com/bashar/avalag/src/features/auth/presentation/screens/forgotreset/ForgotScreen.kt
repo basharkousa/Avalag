@@ -28,7 +28,6 @@ import com.bashar.avalag.R
 import com.bashar.avalag.src.core.ui.theme.Primary100
 import com.bashar.avalag.src.core.ui.widgets.DefaultButton
 import com.bashar.avalag.src.core.ui.widgets.DefaultTextField
-import com.bashar.avalag.src.core.ui.widgets.defaultCountries
 import com.bashar.avalag.src.core.utils.DemoEvents
 import com.bashar.avalag.src.core.utils.DemoState
 import com.bashar.avalag.src.core.utils.DemoViewModel
@@ -66,7 +65,7 @@ private fun ScreenContent(
     var countryExpanded by remember { mutableStateOf(false) }
     var selectedCode by remember { mutableStateOf("+974") }
     var phone by remember { mutableStateOf("") }
-    var country by remember { mutableStateOf(defaultCountries().first()) }
+//    var country by remember { mutableStateOf(defaultCountries().first()) }
 
     var password by remember { mutableStateOf("") }
 
@@ -105,14 +104,14 @@ private fun ScreenContent(
                 Spacer(Modifier.height(40.dp))
 
                 // Phone row (country + phone)
-                DefaultTextField(
-                    isPhone = true,
-                    country = country,
-                    onCountryChange = { country = it },
-                    value = phone,
-                    onValueChange = { phone = it },
-                    placeholder = stringResource(R.string.phone_number)
-                )
+//                DefaultTextField(
+//                    isPhone = true,
+//                    country = country,
+//                    onCountryChange = { country = it },
+//                    value = phone,
+//                    onValueChange = { phone = it },
+//                    placeholder = stringResource(R.string.phone_number)
+//                )
 
                 Spacer(Modifier.height(12.dp))
 

@@ -23,13 +23,16 @@ class LoginViewModel @Inject constructor(
 
     fun onEvent(event: LoginEvents) {
         when (event) {
-
             is LoginEvents.UsernameChanged -> {
                 _state = _state.copy(username = event.value)
             }
 
             is LoginEvents.PasswordChanged -> {
                 _state = _state.copy(password = event.value)
+            }
+
+            is LoginEvents.CountryChanged -> {
+                _state = _state.copy(selectedCountry = event.value)
             }
 
             LoginEvents.LoginClicked -> login()
@@ -41,17 +44,15 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun login() {
+        val username = _state.username
+        val password = _state.password
+        val key = _state.selectedCountry.dialCode
 
-//        val username = _state.username
-//        val password = _state.password
-//        val key = _state.key
-//
-        val username = "23156544"
-        val password = "secret"
-        val key = "+963"
+//        val username = "23156544"
+//        val password = "secret"
+//        val key = "+963"
 
         viewModelScope.launch {
-
             _state = _state.copy(isLoading = true)
 
             val result = runCatching {
@@ -63,7 +64,6 @@ class LoginViewModel @Inject constructor(
                 )
             }
 
-            val session = result.getOrNull()
             val error = result.exceptionOrNull()
 
             if (error != null) {
