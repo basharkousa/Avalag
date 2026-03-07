@@ -29,10 +29,12 @@ class AuthRepoTest {
         var lastFcm: String? = null
 
         override suspend fun login(
+            usernameType : RequestBody,
             username: RequestBody,
             key: RequestBody,
             password: RequestBody,
-            fcm: RequestBody
+            fcm: RequestBody,
+
         ): ApiEnvelope<LoginDto> {
             lastUsername = username.asUtf8()
             lastKey = key.asUtf8()
@@ -80,7 +82,7 @@ class AuthRepoTest {
             )
         )
         val local = FakeAuthLocal()
-        val repo = AuthRepo(api, local)
+        val repo = AuthRepo(api,)
 
         val session = repo.login(
             username = "23156544",
@@ -116,7 +118,7 @@ class AuthRepoTest {
                 data = null
             )
         )
-        val repo = AuthRepo(api, FakeAuthLocal())
+        val repo = AuthRepo(api,)
 
         val ex = runCatching {
             repo.login("23156544", "+963", "secret", "111")
@@ -138,7 +140,7 @@ class AuthRepoTest {
                 )
             )
         )
-        val repo = AuthRepo(api, FakeAuthLocal())
+        val repo = AuthRepo(api,)
 
         val ex = runCatching {
             repo.login("23156544", "+963", "secret", "111")
@@ -160,7 +162,7 @@ class AuthRepoTest {
                 )
             )
         )
-        val repo = AuthRepo(api, FakeAuthLocal())
+        val repo = AuthRepo(api,)
 
         val ex = runCatching {
             repo.login("23156544", "+963", "secret", "111")
@@ -182,7 +184,7 @@ class AuthRepoTest {
                 )
             )
         )
-        val repo = AuthRepo(api, FakeAuthLocal())
+        val repo = AuthRepo(api, )
 
         val ex = runCatching {
             repo.login("23156544", "+963", "secret", "111")

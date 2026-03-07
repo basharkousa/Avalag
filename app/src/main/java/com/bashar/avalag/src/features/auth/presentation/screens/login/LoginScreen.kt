@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +48,6 @@ import com.bashar.avalag.src.core.utils.AvalagMultiPreview
 import com.bashar.avalag.src.core.utils.ScreenTemplate
 import com.bashar.avalag.src.core.utils.UiText
 import com.bashar.avalag.src.core.utils.asString
-import com.bashar.avalag.src.features.auth.presentation.mapper.toAuthModel
 import com.bashar.avalag.src.features.auth.presentation.mapper.toWidgetModel
 import com.bashar.avalag.src.features.auth.presentation.screens.login.test.LoginTestTags
 
@@ -209,6 +209,7 @@ private fun LoginBody(
 
                     // Phone row (country + phone)
                     DefaultTextField(
+                        modifier = Modifier.testTag(LoginTestTags.USERNAME_FIELD),
                         isPhone = true,
                         country = state.selectedCountry.toWidgetModel(),
                         countries = state.availableCountries.map { it.toWidgetModel() },
@@ -221,6 +222,8 @@ private fun LoginBody(
                         },
                         value = state.username,
                         onValueChange = { onEvent(LoginUiEvent.UsernameChanged(it)) },
+                        isError = state.usernameError != null,
+                        errorText = state.usernameError?.asString(LocalContext.current),
                         placeholder = stringResource(R.string.phone_number)
                     )
 
@@ -228,10 +231,13 @@ private fun LoginBody(
 
                     // Password
                     DefaultTextField(
+                        modifier = Modifier.testTag(LoginTestTags.PASSWORD_FIELD),
                         value = state.password,
                         onValueChange = { onEvent(LoginUiEvent.PasswordChanged(it)) },
                         placeholder = stringResource(R.string.password),
-                        isPassword = true
+                        isPassword = true,
+                        isError = state.passwordError != null,
+                        errorText = state.passwordError?.asString(LocalContext.current)
                     )
 
                     Spacer(Modifier.height(14.dp))
@@ -246,7 +252,7 @@ private fun LoginBody(
                             color = MaterialTheme.colorScheme.primary,
                             textDecoration = TextDecoration.Underline,
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W500),
-                            modifier = Modifier.clickable {
+                            modifier = Modifier .testTag(LoginTestTags.SIGNUP_BUTTON).clickable {
                                 onEvent(LoginUiEvent.Navigate(LoginDestination.SIGNUP))
                             }
                         )
@@ -255,7 +261,7 @@ private fun LoginBody(
                             color = MaterialTheme.colorScheme.primary,
                             textDecoration = TextDecoration.Underline,
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W500),
-                            modifier = Modifier.clickable {
+                            modifier = Modifier.testTag(LoginTestTags.RESET_PASSWORD_BUTTON).clickable {
                                 onEvent(LoginUiEvent.Navigate(LoginDestination.RESET_PASSWORD))
                             }
                         )
@@ -265,8 +271,18 @@ private fun LoginBody(
 
                     // Primary button
                     DefaultButton(
+                        modifier = Modifier.testTag(LoginTestTags.LOGIN_BUTTON),
+                        enabled = !state.isLoading,
                         text = stringResource(R.string.next),
-                        onClick = { onEvent(LoginUiEvent.LoginClicked) }
+                        onClick = { onEvent(LoginUiEvent.LoginClicked) },
+                        leadingIcon = {
+                            if (state.isLoading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp).testTag(LoginTestTags.LOADING),
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                        }
                     )
 
                     Spacer(Modifier.height(20.dp))

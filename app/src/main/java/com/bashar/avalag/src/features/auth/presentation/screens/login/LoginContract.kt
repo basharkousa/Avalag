@@ -5,8 +5,10 @@ import com.bashar.avalag.src.features.auth.presentation.data.AuthCountriesProvid
 import com.bashar.avalag.src.features.auth.presentation.model.AuthCountryUi
 
 data class LoginState(
-    val username: String = "",
-    val password: String = "",
+    val username: String = "23156544", //todo to remove value
+    val password: String = "secret", // todo to remove value
+    val usernameError: UiText? = null,
+    val passwordError: UiText? = null,
     val selectedCountry: AuthCountryUi = AuthCountriesProvider.defaultCountry,
     val availableCountries: List<AuthCountryUi> = AuthCountriesProvider.countries,
     val isLoading: Boolean = false,

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bashar.avalag.src.core.data.remote.errors.NetworkErrorMapper
 import com.bashar.avalag.src.features.auth.domain.usecases.LoginUseCase
+import com.bashar.avalag.src.features.auth.domain.validation.AuthValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,11 +25,17 @@ class LoginViewModel @Inject constructor(
     fun onEvent(event: LoginEvents) {
         when (event) {
             is LoginEvents.UsernameChanged -> {
-                _state = _state.copy(username = event.value)
+                _state = _state.copy(
+                    username = event.value,
+                    usernameError = null
+                )
+
             }
 
             is LoginEvents.PasswordChanged -> {
-                _state = _state.copy(password = event.value)
+                _state = _state.copy(
+                    password = event.value,
+                    passwordError = null)
             }
 
             is LoginEvents.CountryChanged -> {
@@ -44,13 +51,21 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun login() {
-        val username = _state.username
+        val username = _state.username.trim()
         val password = _state.password
         val key = _state.selectedCountry.dialCode
 
-//        val username = "23156544"
-//        val password = "secret"
-//        val key = "+963"
+        val phoneError = AuthValidator.validatePhone(username)
+        val passwordError = AuthValidator.validatePassword(password)
+
+        if (phoneError != null || passwordError != null) {
+            _state = _state.copy(
+                usernameError = phoneError,
+                passwordError = passwordError
+            )
+            return
+        }
+
 
         viewModelScope.launch {
             _state = _state.copy(isLoading = true)

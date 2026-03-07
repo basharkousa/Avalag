@@ -69,6 +69,8 @@ fun DefaultTextField(
     enabled: Boolean = true,
     singleLine: Boolean = true,
     maxLines: Int = 1,
+    isError: Boolean = false,
+    errorText: String? = null,
     shape: Shape = MaterialTheme.shapes.large,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium.copy(
         color = MaterialTheme.colorScheme.onSurface
@@ -100,7 +102,9 @@ fun DefaultTextField(
                 enabled = enabled,
                 shape = shape,
                 textStyle = textStyle,
-                onFocusChange = onFocusChange
+                onFocusChange = onFocusChange,
+                isError = isError,
+                errorText = errorText
             )
         } else {
             var isPasswordVisible by remember { mutableStateOf(false) }
@@ -124,6 +128,15 @@ fun DefaultTextField(
                     )
                 },
                 label = label?.let { { Text(it) } },
+                supportingText = {
+                    if (!errorText.isNullOrBlank()) {
+                        Text(
+                            text = errorText,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                },
                 visualTransformation = if (isPassword && !isPasswordVisible) {
                     PasswordVisualTransformation()
                 } else {
@@ -175,6 +188,8 @@ private fun PhoneField(
     countries: List<CountryUi>,
     placeholder: String,
     enabled: Boolean,
+    isError: Boolean,
+    errorText: String?,
     shape: Shape,
     textStyle: TextStyle,
     onFocusChange: ((Boolean) -> Unit)?,
@@ -262,6 +277,15 @@ private fun PhoneField(
                     style = MaterialTheme.typography.bodyMedium,
                     color = Primary100
                 )
+            },
+            supportingText = {
+                if (!errorText.isNullOrBlank()) {
+                    Text(
+                        text = errorText,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Phone

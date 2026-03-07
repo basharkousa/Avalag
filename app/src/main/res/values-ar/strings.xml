@@ -77,6 +77,9 @@
     <string name="error_server">حدث خطأ في الخادم. يرجى المحاولة لاحقًا.</string>
     <string name="error_unknown">حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.</string>
 
-
-
+    <string name="phone_number_required">رقم الهاتف مطلوب</string>
+    <string name="phone_number_invalid">رقم الهاتف غير صالح</string>
+    <string name="phone_number_too_short">رقم الهاتف قصير جدًا</string>
+    <string name="password_required">كلمة المرور مطلوبة</string>
+    <string name="password_too_short">كلمة المرور قصيرة جدًا</string>
 </resources>
