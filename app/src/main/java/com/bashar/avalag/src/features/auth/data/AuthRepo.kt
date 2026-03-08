@@ -3,6 +3,7 @@ package com.bashar.avalag.src.features.auth.data
 import com.bashar.avalag.src.features.auth.data.remote.AuthApi
 import com.bashar.avalag.src.features.auth.data.remote.mapper.toDomain
 import com.bashar.avalag.src.features.auth.domain.model.AuthSession
+import com.bashar.avalag.src.features.auth.domain.repositories.IAuthLocalDataSource
 import com.bashar.avalag.src.features.auth.domain.repositories.IAuthRepo
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -10,8 +11,7 @@ import javax.inject.Inject
 
 class AuthRepo @Inject constructor(
     private val api: AuthApi,
-    //Todo
-//    private val local: IAuthLocalDataSource,
+    private val local: IAuthLocalDataSource,
 ) : IAuthRepo {
 
     override suspend fun login(username: String, key: String, password: String, fcm: String): AuthSession {
@@ -31,8 +31,7 @@ class AuthRepo @Inject constructor(
 
         val session = dto.toDomain()
 
-        //todo store token for splash/isLoggedIn later
-//        local.saveToken(token)
+        local.saveToken(token)
 
         return session
     }

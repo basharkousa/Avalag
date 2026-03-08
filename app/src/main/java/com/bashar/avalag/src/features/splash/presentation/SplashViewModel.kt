@@ -12,6 +12,7 @@ import com.bashar.avalag.BuildConfig
 import com.bashar.avalag.src.core.data.remote.errors.NetworkErrorMapper
 import com.bashar.avalag.src.features.appversion.domain.model.UpdateStatus
 import com.bashar.avalag.src.features.appversion.domain.usecase.GetAppVersionInfoUseCase
+import com.bashar.avalag.src.features.auth.domain.usecases.GetTokenUseCase
 import com.bashar.avalag.src.features.basics.domain.usecases.GetBasicsInfoUseCase
 import com.bashar.avalag.src.features.basics.domain.usecases.GetEnumsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,8 @@ class SplashViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getAppVersionInfo: GetAppVersionInfoUseCase,
     private val getBasicsInfo: GetBasicsInfoUseCase,
-    private val getEnums: GetEnumsUseCase
+    private val getEnums: GetEnumsUseCase,
+    private val getToken: GetTokenUseCase
 ) : ViewModel() {
 
     private var _state by mutableStateOf(SplashState())
@@ -94,8 +96,7 @@ class SplashViewModel @Inject constructor(
                         return@launch
                     }
 
-                    // --- AUTH decision (stub now, real later) ---
-                    val isLoggedIn = false // TODO: replace with token/session check
+                    val isLoggedIn = !getToken().isNullOrBlank()
                     _state = SplashState(
                         isLoading = false,
                         navigateTo = if (isLoggedIn) SplashDestination.MAIN else SplashDestination.AUTH

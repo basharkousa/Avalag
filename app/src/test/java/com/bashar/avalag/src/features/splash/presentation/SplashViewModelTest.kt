@@ -7,6 +7,10 @@ import com.bashar.avalag.src.features.appversion.domain.model.AppVersionInfo
 import com.bashar.avalag.src.features.appversion.domain.model.UpdateStatus
 import com.bashar.avalag.src.features.appversion.domain.repositories.IAppVersionRepo
 import com.bashar.avalag.src.features.appversion.domain.usecase.GetAppVersionInfoUseCase
+import com.bashar.avalag.src.features.auth.domain.model.AuthSession
+import com.bashar.avalag.src.features.auth.domain.repositories.IAuthLocalDataSource
+import com.bashar.avalag.src.features.auth.domain.repositories.IAuthRepo
+import com.bashar.avalag.src.features.auth.domain.usecases.GetTokenUseCase
 import com.bashar.avalag.src.features.basics.domain.model.AppEnums
 import com.bashar.avalag.src.features.basics.domain.model.BasicsInfo
 import com.bashar.avalag.src.features.basics.domain.model.Country
@@ -57,6 +61,20 @@ class SplashViewModelTest {
         }
     }
 
+    private class FakeAuthLocal : IAuthLocalDataSource {
+        var token: String? = null
+
+        override suspend fun saveToken(token: String) {
+            this.token = token
+        }
+
+        override suspend fun getToken(): String? = token
+
+        override suspend fun clearToken() {
+            token = null
+        }
+    }
+
     private fun defaultEnums(): AppEnums =
         AppEnums(categories = mapOf("payment_methods" to mapOf("cash" to "Cash")))
 
@@ -67,55 +85,72 @@ class SplashViewModelTest {
         )
 
     @Test
-    fun `mandatory - shows update dialog and does not navigate and does not call bootstrap`() = runTest {
-        val appRepo = FakeAppVersionRepo().apply {
-            result = Result.success(AppVersionInfo(updateStatus = UpdateStatus.MANDATORY, link = "https://www.apple.com/"))
+    fun `mandatory - shows update dialog and does not navigate and does not call bootstrap`() =
+        runTest {
+            val appRepo = FakeAppVersionRepo().apply {
+                result = Result.success(
+                    AppVersionInfo(
+                        updateStatus = UpdateStatus.MANDATORY,
+                        link = "https://www.apple.com/"
+                    )
+                )
+            }
+            val basicsRepo = FakeBasicsRepo().apply {
+                enumsResult = Result.success(defaultEnums())
+                basicsResult = Result.success(defaultBasics())
+            }
+
+            val authLocal = FakeAuthLocal().apply {
+                token = "saved_token"
+            }
+
+            val vm = SplashViewModel(
+                savedStateHandle = SavedStateHandle(),
+                getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
+                getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
+                getEnums = GetEnumsUseCase(basicsRepo),
+                getToken = GetTokenUseCase(authLocal)
+            )
+
+            advanceUntilIdle()
+
+            val state = vm.state.value
+            assertFalse(state.isLoading)
+            assertNotNull(state.updateDialog)
+            assertEquals("https://www.apple.com/", state.updateDialog?.link)
+            assertNull(state.navigateTo)
+            assertNull(state.snackbarMessage)
+
+            // bootstrap NOT called
+            assertEquals(0, basicsRepo.getEnumsCalls)
+            assertEquals(0, basicsRepo.getBasicsCalls)
+
+            // request payload basics
+            assertEquals("android", appRepo.lastPlatform)
+            assertFalse(appRepo.lastVersion.isNullOrBlank())
         }
-        val basicsRepo = FakeBasicsRepo().apply {
-            enumsResult = Result.success(defaultEnums())
-            basicsResult = Result.success(defaultBasics())
-        }
-
-        val vm = SplashViewModel(
-            savedStateHandle = SavedStateHandle(),
-            getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
-            getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
-            getEnums = GetEnumsUseCase(basicsRepo)
-        )
-
-        advanceUntilIdle()
-
-        val state = vm.state.value
-        assertFalse(state.isLoading)
-        assertNotNull(state.updateDialog)
-        assertEquals("https://www.apple.com/", state.updateDialog?.link)
-        assertNull(state.navigateTo)
-        assertNull(state.snackbarMessage)
-
-        // bootstrap NOT called
-        assertEquals(0, basicsRepo.getEnumsCalls)
-        assertEquals(0, basicsRepo.getBasicsCalls)
-
-        // request payload basics
-        assertEquals("android", appRepo.lastPlatform)
-        assertFalse(appRepo.lastVersion.isNullOrBlank())
-    }
 
     @Test
     fun `up_to_date - calls bootstrap and navigates to AUTH (stub isLoggedIn=false)`() = runTest {
         val appRepo = FakeAppVersionRepo().apply {
-            result = Result.success(AppVersionInfo(updateStatus = UpdateStatus.UP_TO_DATE, link = null))
+            result =
+                Result.success(AppVersionInfo(updateStatus = UpdateStatus.UP_TO_DATE, link = null))
         }
         val basicsRepo = FakeBasicsRepo().apply {
             enumsResult = Result.success(defaultEnums())
             basicsResult = Result.success(defaultBasics())
         }
 
+        val authLocal = FakeAuthLocal().apply {
+            token = "saved_token"
+        }
+
         val vm = SplashViewModel(
             savedStateHandle = SavedStateHandle(),
             getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
             getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
-            getEnums = GetEnumsUseCase(basicsRepo)
+            getEnums = GetEnumsUseCase(basicsRepo),
+            getToken = GetTokenUseCase(authLocal)
         )
 
         advanceUntilIdle()
@@ -137,18 +172,24 @@ class SplashViewModelTest {
     @Test
     fun `up_to_date - bootstrap failure shows snackbar and does not navigate`() = runTest {
         val appRepo = FakeAppVersionRepo().apply {
-            result = Result.success(AppVersionInfo(updateStatus = UpdateStatus.UP_TO_DATE, link = null))
+            result =
+                Result.success(AppVersionInfo(updateStatus = UpdateStatus.UP_TO_DATE, link = null))
         }
         val basicsRepo = FakeBasicsRepo().apply {
             enumsResult = Result.failure(RuntimeException("enums down"))
             basicsResult = Result.success(defaultBasics())
         }
 
+        val authLocal = FakeAuthLocal().apply {
+            token = "saved_token"
+        }
+
         val vm = SplashViewModel(
             savedStateHandle = SavedStateHandle(),
             getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
             getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
-            getEnums = GetEnumsUseCase(basicsRepo)
+            getEnums = GetEnumsUseCase(basicsRepo),
+            getToken = GetTokenUseCase(authLocal)
         )
 
         advanceUntilIdle()
@@ -164,6 +205,36 @@ class SplashViewModelTest {
         // basics might still be attempted due to parallelism; we don't assert exact count here
     }
 
+
+    @Test
+    fun `up_to_date with token navigates to MAIN`() = runTest {
+        val appRepo = FakeAppVersionRepo().apply {
+            result =
+                Result.success(AppVersionInfo(updateStatus = UpdateStatus.UP_TO_DATE, link = null))
+        }
+        val basicsRepo = FakeBasicsRepo().apply {
+            enumsResult = Result.success(defaultEnums())
+            basicsResult = Result.success(defaultBasics())
+        }
+        val authLocal = FakeAuthLocal().apply {
+            token = "saved_token"
+        }
+
+        val vm = SplashViewModel(
+            savedStateHandle = SavedStateHandle(),
+            getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
+            getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
+            getEnums = GetEnumsUseCase(basicsRepo),
+            getToken = GetTokenUseCase(authLocal)
+        )
+
+        advanceUntilIdle()
+
+        val state = vm.state.value
+        assertFalse(state.isLoading)
+        assertEquals(SplashDestination.MAIN, state.navigateTo)
+    }
+
     @Test
     fun `error - version check fails shows snackbar and does not call bootstrap`() = runTest {
         val appRepo = FakeAppVersionRepo().apply {
@@ -174,11 +245,16 @@ class SplashViewModelTest {
             basicsResult = Result.success(defaultBasics())
         }
 
+        val authLocal = FakeAuthLocal().apply {
+            token = "saved_token"
+        }
+
         val vm = SplashViewModel(
             savedStateHandle = SavedStateHandle(),
             getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
             getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
-            getEnums = GetEnumsUseCase(basicsRepo)
+            getEnums = GetEnumsUseCase(basicsRepo),
+            getToken = GetTokenUseCase(authLocal)
         )
 
         advanceUntilIdle()
@@ -208,7 +284,8 @@ class SplashViewModelTest {
             savedStateHandle = SavedStateHandle(),
             getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
             getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
-            getEnums = GetEnumsUseCase(basicsRepo)
+            getEnums = GetEnumsUseCase(basicsRepo),
+            getToken = GetTokenUseCase(FakeAuthLocal())
         )
 
         advanceUntilIdle()
@@ -223,7 +300,8 @@ class SplashViewModelTest {
     @Test
     fun `retry - after bootstrap failure succeeds and navigates`() = runTest {
         val appRepo = FakeAppVersionRepo().apply {
-            result = Result.success(AppVersionInfo(updateStatus = UpdateStatus.UP_TO_DATE, link = null))
+            result =
+                Result.success(AppVersionInfo(updateStatus = UpdateStatus.UP_TO_DATE, link = null))
         }
         val basicsRepo = FakeBasicsRepo().apply {
             enumsResult = Result.failure(RuntimeException("enums down"))
@@ -234,7 +312,8 @@ class SplashViewModelTest {
             savedStateHandle = SavedStateHandle(),
             getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
             getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
-            getEnums = GetEnumsUseCase(basicsRepo)
+            getEnums = GetEnumsUseCase(basicsRepo),
+            getToken = GetTokenUseCase(FakeAuthLocal())
         )
 
         advanceUntilIdle()
