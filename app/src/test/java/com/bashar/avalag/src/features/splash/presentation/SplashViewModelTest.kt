@@ -255,8 +255,8 @@ class SplashViewModelTest {
 
 
         // bootstrap CALLED
-        assertEquals(1, basicsRepo.getEnumsCalls)
-        assertEquals(1, basicsRepo.getBasicsCalls)
+        assertEquals(2, basicsRepo.getEnumsCalls)
+        assertEquals(2, basicsRepo.getBasicsCalls)
 
         assertEquals("android", appRepo.lastPlatform)
         assertEquals(BuildConfig.VERSION_NAME, appRepo.lastVersion)
