@@ -1,7 +1,7 @@
 package com.bashar.avalag.src.features.auth.data
 
 import com.bashar.avalag.src.features.auth.data.remote.AuthApi
-import com.bashar.avalag.src.features.auth.data.remote.mapper.toDomain
+import com.bashar.avalag.src.features.auth.data.mapper.toDomain
 import com.bashar.avalag.src.features.auth.domain.model.AuthSession
 import com.bashar.avalag.src.features.auth.domain.repositories.IAuthLocalDataSource
 import com.bashar.avalag.src.features.auth.domain.repositories.IAuthRepo

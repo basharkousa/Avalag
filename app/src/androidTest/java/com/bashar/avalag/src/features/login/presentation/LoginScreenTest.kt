@@ -137,7 +137,7 @@ class LoginScreenTest {
 
         composeRule.onNodeWithTag(LoginTestTags.USERNAME_FIELD,useUnmergedTree = true)
             .performClick()
-            .performTextInput("23156544",)
+            .performTextInput("23156544")
 
         composeRule.runOnIdle {
             Assert.assertEquals("23156544", latestUsername)
@@ -232,7 +232,7 @@ class LoginScreenTest {
     }
 
     @Test
-    fun snackbar_shows_and_retry_emits_login_click() {
+    fun snackBar_shows_and_retry_emits_login_click() {
         var retried = false
 
         composeRule.setContent {

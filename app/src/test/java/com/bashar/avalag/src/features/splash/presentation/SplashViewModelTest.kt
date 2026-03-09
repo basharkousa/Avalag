@@ -1,5 +1,6 @@
 package com.bashar.avalag.src.features.splash.presentation
 
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.SavedStateHandle
 import com.bashar.avalag.BuildConfig
 import com.bashar.avalag.src.core.testing.MainDispatcherRule
@@ -7,9 +8,7 @@ import com.bashar.avalag.src.features.appversion.domain.model.AppVersionInfo
 import com.bashar.avalag.src.features.appversion.domain.model.UpdateStatus
 import com.bashar.avalag.src.features.appversion.domain.repositories.IAppVersionRepo
 import com.bashar.avalag.src.features.appversion.domain.usecase.GetAppVersionInfoUseCase
-import com.bashar.avalag.src.features.auth.domain.model.AuthSession
 import com.bashar.avalag.src.features.auth.domain.repositories.IAuthLocalDataSource
-import com.bashar.avalag.src.features.auth.domain.repositories.IAuthRepo
 import com.bashar.avalag.src.features.auth.domain.usecases.GetTokenUseCase
 import com.bashar.avalag.src.features.basics.domain.model.AppEnums
 import com.bashar.avalag.src.features.basics.domain.model.BasicsInfo
@@ -18,7 +17,13 @@ import com.bashar.avalag.src.features.basics.domain.model.Promotion
 import com.bashar.avalag.src.features.basics.domain.repositories.IBasicsRepo
 import com.bashar.avalag.src.features.basics.domain.usecases.GetBasicsInfoUseCase
 import com.bashar.avalag.src.features.basics.domain.usecases.GetEnumsUseCase
+import com.bashar.avalag.src.features.setting.domain.models.Language
+import com.bashar.avalag.src.features.setting.domain.models.ThemeMode
+import com.bashar.avalag.src.features.setting.domain.repositories.ISettingRepo
+import com.bashar.avalag.src.features.splash.domain.usecases.IsFirstLaunchUseCase
+import com.bashar.avalag.src.features.splash.domain.usecases.SetFirstLaunchUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
@@ -75,6 +80,29 @@ class SplashViewModelTest {
         }
     }
 
+    private class FakeSettingRepo : ISettingRepo{
+        override fun observeTheme() = error("No need to be implemented")
+        override suspend fun setTheme(mode: ThemeMode): Preferences {
+            error("No need to be implemented")
+        }
+
+        override fun observeLanguage(): Flow<Language> {
+            error("No need to be implemented")
+        }
+
+        override suspend fun setLanguage(language: Language): Preferences {
+            error("No need to be implemented")
+        }
+
+        var firstLaunch = true
+        override suspend fun isFirstLaunch(): Boolean = firstLaunch
+
+
+        override suspend fun setFirstLaunch(value: Boolean) {
+           firstLaunch = value
+        }
+    }
+
     private fun defaultEnums(): AppEnums =
         AppEnums(categories = mapOf("payment_methods" to mapOf("cash" to "Cash")))
 
@@ -109,7 +137,9 @@ class SplashViewModelTest {
                 getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
                 getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
                 getEnums = GetEnumsUseCase(basicsRepo),
-                getToken = GetTokenUseCase(authLocal)
+                getToken = GetTokenUseCase(authLocal),
+                setFirstLaunchUseCase = SetFirstLaunchUseCase(FakeSettingRepo()),
+                isFirstLaunchUseCase = IsFirstLaunchUseCase(FakeSettingRepo())
             )
 
             advanceUntilIdle()
@@ -142,7 +172,7 @@ class SplashViewModelTest {
         }
 
         val authLocal = FakeAuthLocal().apply {
-            token = "saved_token"
+            token = ""
         }
 
         val vm = SplashViewModel(
@@ -150,7 +180,9 @@ class SplashViewModelTest {
             getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
             getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
             getEnums = GetEnumsUseCase(basicsRepo),
-            getToken = GetTokenUseCase(authLocal)
+            getToken = GetTokenUseCase(authLocal),
+            setFirstLaunchUseCase = SetFirstLaunchUseCase(FakeSettingRepo()),
+            isFirstLaunchUseCase = IsFirstLaunchUseCase(FakeSettingRepo())
         )
 
         advanceUntilIdle()
@@ -159,7 +191,68 @@ class SplashViewModelTest {
         assertFalse(state.isLoading)
         assertNull(state.updateDialog)
         assertNull(state.snackbarMessage)
+
+        assertEquals(SplashDestination.Onboarding,state.navigateTo)
+//        assertEquals(SplashDestination.AUTH, state.navigateTo)
+
+        // bootstrap CALLED
+        assertEquals(1, basicsRepo.getEnumsCalls)
+        assertEquals(1, basicsRepo.getBasicsCalls)
+
+        assertEquals("android", appRepo.lastPlatform)
+        assertEquals(BuildConfig.VERSION_NAME, appRepo.lastVersion)
+    }
+
+    @Test
+    fun `up_to_date - First app launch and not loggedIn - navigate to Onboarding then seconde launch navigate to Auth`() = runTest {
+        val appRepo = FakeAppVersionRepo().apply {
+            result =
+                Result.success(AppVersionInfo(updateStatus = UpdateStatus.UP_TO_DATE, link = null))
+        }
+        val basicsRepo = FakeBasicsRepo().apply {
+            enumsResult = Result.success(defaultEnums())
+            basicsResult = Result.success(defaultBasics())
+        }
+
+        val authLocal = FakeAuthLocal().apply {
+            token = ""
+        }
+
+        val settingRepo = FakeSettingRepo()
+
+        var vm = SplashViewModel(
+            savedStateHandle = SavedStateHandle(),
+            getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
+            getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
+            getEnums = GetEnumsUseCase(basicsRepo),
+            getToken = GetTokenUseCase(authLocal),
+            setFirstLaunchUseCase = SetFirstLaunchUseCase(settingRepo),
+            isFirstLaunchUseCase = IsFirstLaunchUseCase(settingRepo)
+        )
+
+        advanceUntilIdle()
+
+        var state = vm.state.value
+        assertFalse(state.isLoading)
+        assertNull(state.updateDialog)
+        assertNull(state.snackbarMessage)
+
+        assertEquals(SplashDestination.Onboarding,state.navigateTo)
+//        assertEquals(SplashDestination.AUTH, state.navigateTo)
+
+        vm = SplashViewModel(
+            savedStateHandle = SavedStateHandle(),
+            getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
+            getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
+            getEnums = GetEnumsUseCase(basicsRepo),
+            getToken = GetTokenUseCase(authLocal),
+            setFirstLaunchUseCase = SetFirstLaunchUseCase(settingRepo),
+            isFirstLaunchUseCase = IsFirstLaunchUseCase(settingRepo)
+        )
+        advanceUntilIdle()
+        state = vm.state.value
         assertEquals(SplashDestination.AUTH, state.navigateTo)
+
 
         // bootstrap CALLED
         assertEquals(1, basicsRepo.getEnumsCalls)
@@ -189,7 +282,9 @@ class SplashViewModelTest {
             getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
             getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
             getEnums = GetEnumsUseCase(basicsRepo),
-            getToken = GetTokenUseCase(authLocal)
+            getToken = GetTokenUseCase(authLocal),
+            setFirstLaunchUseCase = SetFirstLaunchUseCase(FakeSettingRepo()),
+            isFirstLaunchUseCase = IsFirstLaunchUseCase(FakeSettingRepo())
         )
 
         advanceUntilIdle()
@@ -225,7 +320,9 @@ class SplashViewModelTest {
             getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
             getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
             getEnums = GetEnumsUseCase(basicsRepo),
-            getToken = GetTokenUseCase(authLocal)
+            getToken = GetTokenUseCase(authLocal),
+            setFirstLaunchUseCase = SetFirstLaunchUseCase(FakeSettingRepo()),
+            isFirstLaunchUseCase = IsFirstLaunchUseCase(FakeSettingRepo())
         )
 
         advanceUntilIdle()
@@ -254,7 +351,9 @@ class SplashViewModelTest {
             getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
             getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
             getEnums = GetEnumsUseCase(basicsRepo),
-            getToken = GetTokenUseCase(authLocal)
+            getToken = GetTokenUseCase(authLocal),
+            setFirstLaunchUseCase = SetFirstLaunchUseCase(FakeSettingRepo()),
+            isFirstLaunchUseCase = IsFirstLaunchUseCase(FakeSettingRepo())
         )
 
         advanceUntilIdle()
@@ -285,7 +384,9 @@ class SplashViewModelTest {
             getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
             getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
             getEnums = GetEnumsUseCase(basicsRepo),
-            getToken = GetTokenUseCase(FakeAuthLocal())
+            getToken = GetTokenUseCase(FakeAuthLocal()),
+            setFirstLaunchUseCase = SetFirstLaunchUseCase(FakeSettingRepo()),
+            isFirstLaunchUseCase = IsFirstLaunchUseCase(FakeSettingRepo())
         )
 
         advanceUntilIdle()
@@ -313,7 +414,9 @@ class SplashViewModelTest {
             getAppVersionInfo = GetAppVersionInfoUseCase(appRepo),
             getBasicsInfo = GetBasicsInfoUseCase(basicsRepo),
             getEnums = GetEnumsUseCase(basicsRepo),
-            getToken = GetTokenUseCase(FakeAuthLocal())
+            getToken = GetTokenUseCase(FakeAuthLocal()),
+            setFirstLaunchUseCase = SetFirstLaunchUseCase(FakeSettingRepo()),
+            isFirstLaunchUseCase = IsFirstLaunchUseCase(FakeSettingRepo())
         )
 
         advanceUntilIdle()

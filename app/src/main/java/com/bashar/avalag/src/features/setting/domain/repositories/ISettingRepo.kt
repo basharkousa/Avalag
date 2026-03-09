@@ -12,4 +12,8 @@ interface ISettingRepo {
 
     fun observeLanguage(): Flow<Language>
     suspend fun setLanguage(language: Language): Preferences
+
+    suspend fun isFirstLaunch(): Boolean
+
+    suspend fun setFirstLaunch(value: Boolean)
 }

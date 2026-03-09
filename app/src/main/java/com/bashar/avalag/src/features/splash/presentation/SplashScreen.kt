@@ -31,7 +31,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -48,6 +47,7 @@ import com.bashar.avalag.src.features.splash.presentation.test.SplashTestTags
 fun SplashScreen(
     onNavigateToAuth: () -> Unit,
     onNavigateToMain: () -> Unit,
+    onNavigateToOnboarding:() -> Unit,
     onOpenUpdateLink: (String) -> Unit = {}, // keep it injectable from nav graph
     onExitApp: () -> Unit = {},              // keep it injectable from nav graph
     vm: SplashViewModel = hiltViewModel(),
@@ -83,6 +83,7 @@ fun SplashScreen(
                     when (event.to) {
                         SplashDestination.AUTH -> onNavigateToAuth()
                         SplashDestination.MAIN -> onNavigateToMain()
+                        SplashDestination.Onboarding -> onNavigateToOnboarding()
                     }
                 }
             }

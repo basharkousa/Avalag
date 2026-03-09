@@ -4,6 +4,7 @@ import com.bashar.avalag.src.core.utils.UiText
 
 data class SplashState(
     val isLoading: Boolean = true,
+    val isFirstLaunch: Boolean = true,
     val updateDialog: UpdateDialogState? = null,
     val snackbarMessage: UiText? = null,
     val navigateTo: SplashDestination? = null
@@ -11,7 +12,7 @@ data class SplashState(
 
 data class UpdateDialogState(val link: String?)
 
-enum class SplashDestination { AUTH, MAIN }
+enum class SplashDestination { AUTH, MAIN, Onboarding }
 
 /** UI -> Route */
 sealed interface SplashUiEvent {

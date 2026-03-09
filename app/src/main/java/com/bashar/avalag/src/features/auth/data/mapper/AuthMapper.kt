@@ -1,4 +1,4 @@
-package com.bashar.avalag.src.features.auth.data.remote.mapper
+package com.bashar.avalag.src.features.auth.data.mapper
 
 import com.bashar.avalag.src.features.auth.data.remote.dto.AccountStatusDto
 import com.bashar.avalag.src.features.auth.data.remote.dto.LoginDto

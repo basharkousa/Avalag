@@ -10,6 +10,13 @@ class SettingRepo(
     private val ds: SettingPreferencesDataSource
 ) : ISettingRepo {
 
+    override suspend fun isFirstLaunch(): Boolean = ds.isFirstLaunch()
+
+    override suspend fun setFirstLaunch(value: Boolean) {
+        ds.setFirstLaunch(value)
+    }
+
+
     override fun observeTheme() = ds.theme
     override suspend fun setTheme(mode: ThemeMode) = ds.setTheme(mode)
 

@@ -15,6 +15,8 @@ import com.bashar.avalag.src.features.appversion.domain.usecase.GetAppVersionInf
 import com.bashar.avalag.src.features.auth.domain.usecases.GetTokenUseCase
 import com.bashar.avalag.src.features.basics.domain.usecases.GetBasicsInfoUseCase
 import com.bashar.avalag.src.features.basics.domain.usecases.GetEnumsUseCase
+import com.bashar.avalag.src.features.splash.domain.usecases.IsFirstLaunchUseCase
+import com.bashar.avalag.src.features.splash.domain.usecases.SetFirstLaunchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -27,7 +29,9 @@ class SplashViewModel @Inject constructor(
     private val getAppVersionInfo: GetAppVersionInfoUseCase,
     private val getBasicsInfo: GetBasicsInfoUseCase,
     private val getEnums: GetEnumsUseCase,
-    private val getToken: GetTokenUseCase
+    private val getToken: GetTokenUseCase,
+    private val setFirstLaunchUseCase: SetFirstLaunchUseCase,
+    private val isFirstLaunchUseCase: IsFirstLaunchUseCase
 ) : ViewModel() {
 
     private var _state by mutableStateOf(SplashState())
@@ -46,11 +50,14 @@ class SplashViewModel @Inject constructor(
 
     private fun checkVersionAndBootstrap() {
         viewModelScope.launch {
-            _state = SplashState(isLoading = true)
 
+            _state = SplashState(isLoading = true,isFirstLaunch = isFirstLaunchUseCase())
+
+            setFirstLaunchUseCase(false)
             val platform = "android"
-//            val version = BuildConfig.VERSION_NAME
-              val version = "2.0.0" // e.g. "1.1.0"
+//         todo
+            val version = BuildConfig.VERSION_NAME
+//            val version = "2.0.0" // e.g. "1.1.0"
 
             val versionResult = runCatching { getAppVersionInfo(platform, version) }
             val info = versionResult.getOrNull()
@@ -97,9 +104,12 @@ class SplashViewModel @Inject constructor(
                     }
 
                     val isLoggedIn = !getToken().isNullOrBlank()
+                    val isFirstLaunch = _state.isFirstLaunch
                     _state = SplashState(
                         isLoading = false,
-                        navigateTo = if (isLoggedIn) SplashDestination.MAIN else SplashDestination.AUTH
+                        navigateTo = if (isLoggedIn) SplashDestination.MAIN else
+                            if (isFirstLaunch) SplashDestination.Onboarding else SplashDestination.AUTH
+
                     )
                 }
             }

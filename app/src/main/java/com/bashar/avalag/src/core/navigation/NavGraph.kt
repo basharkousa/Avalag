@@ -54,6 +54,11 @@ fun MyAppNavigator(
                   onOpenUpdateLink = { link ->
                      navController.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
                   },
+                  onNavigateToOnboarding = {
+                      navController.navigate(Screen.OnBoardingRoute.route) {
+                          popUpTo(Screen.SplashRoute.route) { inclusive = true }
+                      }
+                  },
                   onExitApp = {
                       ((navController.context) as? Activity)?.finish()
                   }

@@ -40,6 +40,7 @@ class AuthRepoTest {
             lastKey = key.asUtf8()
             lastPassword = password.asUtf8()
             lastFcm = fcm.asUtf8()
+
             return response
         }
     }
@@ -82,8 +83,7 @@ class AuthRepoTest {
             )
         )
         val local = FakeAuthLocal()
-        val repo = AuthRepo(api,)
-
+        val repo = AuthRepo(api,local)
         val session = repo.login(
             username = "23156544",
             key = "+963",
@@ -118,7 +118,7 @@ class AuthRepoTest {
                 data = null
             )
         )
-        val repo = AuthRepo(api,)
+        val repo = AuthRepo(api,FakeAuthLocal())
 
         val ex = runCatching {
             repo.login("23156544", "+963", "secret", "111")
@@ -140,7 +140,7 @@ class AuthRepoTest {
                 )
             )
         )
-        val repo = AuthRepo(api,)
+        val repo = AuthRepo(api,FakeAuthLocal())
 
         val ex = runCatching {
             repo.login("23156544", "+963", "secret", "111")
@@ -162,7 +162,7 @@ class AuthRepoTest {
                 )
             )
         )
-        val repo = AuthRepo(api,)
+        val repo = AuthRepo(api,FakeAuthLocal())
 
         val ex = runCatching {
             repo.login("23156544", "+963", "secret", "111")
@@ -184,7 +184,7 @@ class AuthRepoTest {
                 )
             )
         )
-        val repo = AuthRepo(api, )
+        val repo = AuthRepo(api, FakeAuthLocal())
 
         val ex = runCatching {
             repo.login("23156544", "+963", "secret", "111")
