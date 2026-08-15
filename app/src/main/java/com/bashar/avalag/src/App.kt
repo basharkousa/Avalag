@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -34,7 +35,7 @@ fun MyApp(vm: SettingsViewModel = hiltViewModel(), content: @Composable () -> Un
 
     val textMessage = stringResource(R.string.press_back_again_to_exit)
 
-    val lastBackPressTime = remember { mutableStateOf(0L) }
+    val lastBackPressTime = remember { mutableLongStateOf(0L) }
     val context = LocalContext.current
     val activity = (LocalActivity.current)
 

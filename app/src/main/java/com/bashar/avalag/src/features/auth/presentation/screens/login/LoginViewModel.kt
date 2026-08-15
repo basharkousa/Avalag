@@ -77,7 +77,37 @@ class LoginViewModel @Inject constructor(
                     password = password,
                     fcm = "11111111111111111111111111"
                 )
-            }
+            }.fold(
+                onSuccess = { result->
+                    _state = _state.copy(
+                        isLoading = false,
+                        navigateTo = LoginDestination.MAIN
+                    )
+                },
+                onFailure = {error ->
+                    _state = _state.copy(
+                        isLoading = false,
+                        snackbarMessage = NetworkErrorMapper.toUiText(error)
+                    )
+                    return@launch
+                }
+            )
+/*
+            result.fold(
+                onSuccess = { result->
+                    _state = _state.copy(
+                        isLoading = false,
+                        navigateTo = LoginDestination.MAIN
+                    )
+                },
+                onFailure = {error ->
+                    _state = _state.copy(
+                        isLoading = false,
+                        snackbarMessage = NetworkErrorMapper.toUiText(error)
+                    )
+                    return@launch
+                }
+            )
 
             val error = result.exceptionOrNull()
 
@@ -92,7 +122,7 @@ class LoginViewModel @Inject constructor(
             _state = _state.copy(
                 isLoading = false,
                 navigateTo = LoginDestination.MAIN
-            )
+            )*/
         }
     }
 }

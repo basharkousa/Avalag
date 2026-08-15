@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.bashar.avalag"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.bashar.avalag"

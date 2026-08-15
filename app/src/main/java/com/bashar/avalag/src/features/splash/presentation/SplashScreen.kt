@@ -68,17 +68,14 @@ fun SplashScreen(
             when (event) {
                 SplashUiEvent.Retry -> vm.onEvent(SplashEvents.Retry)
                 SplashUiEvent.ConsumeSnackbar -> vm.onEvent(SplashEvents.ConsumeSnackbar)
-
                 SplashUiEvent.OpenUpdateLink -> {
                     val link = state.updateDialog?.link ?: return@ScreenContent
                     if (link.isBlank()) return@ScreenContent
                     if (onOpenUpdateLink === {}) defaultOpenLink(link) else onOpenUpdateLink(link)
                 }
-
                 SplashUiEvent.ExitApp -> {
                     if (onExitApp === {}) defaultExit() else onExitApp()
                 }
-
                 is SplashUiEvent.Navigate -> {
                     when (event.to) {
                         SplashDestination.AUTH -> onNavigateToAuth()
