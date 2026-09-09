@@ -1,0 +1,20 @@
+Phase 2 — Kotlin for Android Architecture
+
+Estimated duration: about 1 week at roughly 1.5–2 hours/day.
+
+The main topics are:
+
+UI State
+UI Events / Actions
+Repository pattern
+Use Cases
+DTO vs Domain models
+Mappers
+Dependency inversion
+Fake repositories for testing
+Small architecture exercise combining everything
+
+This phase is intentionally before Coroutines and Flow.
+We first build a clean synchronous architecture,
+then in Phase 3 we'll make it asynchronous with coroutines,
+and in Phase 4 we'll introduce Flow, StateFlow, and SharedFlow.

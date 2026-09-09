@@ -2,6 +2,18 @@ package com.bashar.avalag.ph1kotlinRefresh
 
 import org.junit.Test
 
+
+/*
+* for (i in 1..10)          // 1 to 10
+for (i in 1 until 10)     // 1 to 9
+for (i in 1..<10)         // 1 to 9
+for (i in 10 downTo 1)    // 10 to 1
+for (i in 0..10 step 2)   // 0, 2, 4, 6...
+for (item in list)         // values
+for (i in list.indices)    // indices
+for ((i, item) in list.withIndex()) // index + value
+* */
+
 class Collections {
     @Test
     fun main() {
