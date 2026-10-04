@@ -1,0 +1,21 @@
+Now that you understand sequential execution, we're ready to introduce concurrency.
+
+There are three important functions:
+
+| Function | Purpose                                      | Returns     |
+| ----     | ---------------------------------------------| ----------- |
+| launch   | Start a coroutine                            | Job         |
+| async    | Start a coroutine that produces a result     | Deferred<T> |
+| await()  | Suspend until a Deferred result is available | T           |
+
+
+
+
+
+
+
+
+
+
+
+

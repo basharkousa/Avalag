@@ -1,0 +1,31 @@
+Phase 3 — Coroutines & Async Android
+
+We’ll go in this order:
+
+| Step | Topic                       | What you will practice                                      |
+| ---- | --------------------------- | ----------------------------------------------------------- |
+| 3.1  | Coroutine fundamentals      | `suspend`, `runBlocking`, `delay`                           |
+| 3.2  | Coroutine builders          | `launch`, `async`, `await`                                  |
+| 3.3  | Structured concurrency      | parent/child coroutines, `coroutineScope`                   |
+| 3.4  | Dispatchers                 | `Main`, `IO`, `Default`                                     |
+| 3.5  | Error handling              | `try/catch`, `CoroutineExceptionHandler`, `supervisorScope` |
+| 3.6  | Cancellation                | `cancel`, cooperative cancellation                          |
+| 3.7  | Timeout/retry               | `withTimeout`, retry logic                                  |
+| 3.8  | Flow fundamentals           | `Flow`, `flow {}`, `collect`                                |
+| 3.9  | StateFlow / SharedFlow      | Android UI state/events                                     |
+| 3.10 | ViewModel coroutines        | `viewModelScope`                                            |
+| 3.11 | Repository async conversion | `suspend` repositories                                      |
+| 3.12 | Coroutine testing           | `runTest`, fake repositories                                |
+| 3.13 | Convert Phase 2             | full architecture migration                                 |
+| 3.14 | Mini banking project        | realistic async implementation                              |
+
+
+One rule I want you to memorize
+
+Think:
+
+suspend ≠ new thread
+suspend ≠ automatically concurrent
+suspend ≠ automatically background work
+
+suspend = function that may pause and resume
